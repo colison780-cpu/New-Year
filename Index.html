@@ -48,11 +48,6 @@ button{
 .blue{background:#00b0ff}
 .purple{background:#aa00ff}
 .gray{background:#9e9e9e}
-.whatsapp{
-    background:#25D366;
-    color:white;
-    font-weight:bold;
-}
 .madeby{
     position:fixed;
     bottom:10px;
@@ -87,31 +82,31 @@ button{
 This year should be memorable
 </div>
 
-<div id="countdown">Starting...</div>
+<div id="countdown"></div>
 
 <!-- Q1 -->
 <div class="section" id="q1">
 <p>🙂 How are you?</p>
-<button class="green" onclick="nextQ('Good')">Good</button>
-<button class="blue" onclick="nextQ('Fine')">Fine</button>
-<button class="purple" onclick="nextQ('Just like you')">Just like you</button>
-<button class="gray" onclick="nextQ('Prefer not to say')">Don't want to tell</button>
+<button class="green" onclick="q1('Good')">Good</button>
+<button class="blue" onclick="q1('Fine')">Fine</button>
+<button class="purple" onclick="q1('Just like you')">Just like you</button>
+<button class="gray" onclick="q1('Prefer not to say')">Don't want to tell</button>
 </div>
 
 <!-- Q2 -->
 <div class="section" id="q2">
 <p>🎮 play a game with KA today?</p>
-<button class="green" onclick="nextQ2('Yes')">YES</button>
-<button class="green" onclick="nextQ2('Yes')">YES</button>
-<button class="orange" onclick="nextQ2('Let KA decide')">LET KA DECIDE FOR YOU</button>
+<button class="green" onclick="q2('Yes')">YES</button>
+<button class="green" onclick="q2('Yes')">YES</button>
+<button class="orange" onclick="q2('Let KA decide')">LET KA DECIDE FOR YOU</button>
 </div>
 
 <!-- Q3 -->
 <div class="section" id="q3">
 <p>🌟 How you see yourself this year</p>
-<button class="blue" onclick="nextQ3('Relaxed')">Relaxed</button>
-<button class="red" onclick="nextQ3('Stressful')">Stressful</button>
-<button class="purple" onclick="nextQ3('Thriller')">Thriller</button>
+<button class="blue" onclick="q3('Relaxed')">Relaxed</button>
+<button class="red" onclick="q3('Stressful')">Stressful</button>
+<button class="purple" onclick="q3('Thriller')">Thriller</button>
 </div>
 
 <!-- Q4 -->
@@ -119,74 +114,63 @@ This year should be memorable
 <p>🎯 What is your New Year Resolution</p>
 <button class="green" onclick="finish('Will share later')">I WILL TELL YOU ON CHAT</button>
 <button class="red" onclick="finish('Private')">NONE OF YOUR BUSINESS</button>
-<button class="orange" onclick="finish('Still figuring it out')">I DIDN'T DECIDED YET</button>
+<button class="orange" onclick="finish('Still deciding')">I DIDN'T DECIDED YET</button>
 </div>
 
-<!-- RESULT -->
 <div class="section" id="result"></div>
 
 </div>
 
-<div class="madeby">Made by one and only <b>Rakesh</b></div>
+<!-- ✅ CHANGED HERE -->
+<div class="madeby">Made by one and only <b>KA</b></div>
 
 <script>
-/* ===== COUNTDOWN (10 sec demo) ===== */
-const target = Date.now()+10000;
-const cd=document.getElementById("countdown");
+const target = new Date("2026-01-01T00:00:00+05:30").getTime();
+const now = Date.now();
+const cd = document.getElementById("countdown");
 
-let A0="",A1="",A2="",A3="",started=false;
+let A0="",A1="",A2="",A3="";
 
-setInterval(()=>{
-    const d=target-Date.now();
-    if(d<=0 && !started){
-        started=true;
-        cd.style.display="none";
-        title.style.display="block";
-        subtitle.style.display="block";
-        q1.style.display="block";
-    }else if(!started){
-        cd.innerHTML=`Starting in ${Math.ceil(d/1000)} seconds...`;
-    }
-},1000);
+if(now < target){
+    const timer = setInterval(()=>{
+        const diff = target - Date.now();
+        if(diff<=0){
+            clearInterval(timer);
+            startNewYear();
+        }else{
+            const h=Math.floor(diff/3600000);
+            const m=Math.floor((diff%3600000)/60000);
+            const s=Math.floor((diff%60000)/1000);
+            cd.innerHTML=`${h}h ${m}m ${s}s left`;
+        }
+    },1000);
+}else{
+    startNewYear();
+}
 
-/* ===== FLOW ===== */
-function nextQ(v){
-    A0=v;
-    q1.style.display="none";
-    q2.style.display="block";
+function startNewYear(){
+    cd.style.display="none";
+    title.style.display="block";
+    subtitle.style.display="block";
+    q1.style.display="block";
 }
-function nextQ2(v){
-    A1=v;
-    q2.style.display="none";
-    q3.style.display="block";
-}
-function nextQ3(v){
-    A2=v;
-    q3.style.display="none";
-    q4.style.display="block";
-}
+
+function q1(v){A0=v;q1.style.display="none";q2.style.display="block";}
+function q2(v){A1=v;q2.style.display="none";q3.style.display="block";}
+function q3(v){A2=v;q3.style.display="none";q4.style.display="block";}
 function finish(v){
     A3=v;
     q4.style.display="none";
     result.style.display="block";
     result.innerHTML=`
-    <p><b>Response recorded ✅</b></p>
-    <hr>
+    <p><b>Response recorded ✅</b></p><hr>
     <p>🙂 <b>How you are:</b> ${A0}</p>
     <p>🎮 <b>Game with KA:</b> ${A1}</p>
     <p>🌟 <b>This year:</b> ${A2}</p>
     <p>🎯 <b>Resolution:</b> ${A3}</p>
-    <br>
-    <button class="whatsapp"
-    onclick="window.location.href='https://wa.me/919911670377'">
-    YES – OPEN WHATSAPP
-    </button>
-    <p style="opacity:.7;margin-top:8px;">
-    📸 Take screenshot and send to KA
-    </p>`;
+    <p style="opacity:.7;">📸 Take screenshot and send to KA</p>`;
 }
 
-/* ===== BACKGROUND ===== */
 const c=document.getElementById("bg"),x=c.getContext("2d");
 function r(){c.width=innerWidth;c.height=innerHeight}r();onresize=r;
 let s=[...Array(120)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+1,dx:.4,dy:.4}));
