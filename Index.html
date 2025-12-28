@@ -1,187 +1,151 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Happy New Year 2026 🎊</title>
+<title>Happy New Year 2026</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
 margin:0;
 min-height:100vh;
-background:linear-gradient(135deg,#020024,#090979,#00d4ff);
+background:radial-gradient(circle at top,#1a237e,#000);
+font-family:Arial,Helvetica,sans-serif;
 color:white;
-font-family:'Segoe UI',Arial;
 text-align:center;
 padding:20px;
-overflow:hidden;
 }
 
-/* ✨ floating particles */
-.particle{
-position:fixed;
-width:4px;height:4px;
-background:white;
-border-radius:50%;
-opacity:.7;
-animation:float linear infinite;
-}
-@keyframes float{
-from{transform:translateY(110vh)}
-to{transform:translateY(-10vh)}
+.hidden{display:none;}
+
+.fade{
+animation:fade .6s ease forwards;
 }
 
-/* sections */
-.hidden{display:none}
-.fade{animation:fadeIn .8s ease}
-@keyframes fadeIn{
+@keyframes fade{
 from{opacity:0;transform:translateY(20px)}
 to{opacity:1;transform:translateY(0)}
 }
 
-/* text */
 h1{
-font-size:2.5rem;
-text-shadow:0 0 25px cyan;
-}
-.gold{
+font-size:2.2rem;
 color:gold;
-font-weight:bold;
 text-shadow:0 0 15px gold;
 }
 
-/* buttons */
 button{
 padding:12px 22px;
-margin:6px;
+margin:8px;
 border:none;
-border-radius:30px;
+border-radius:25px;
 font-size:16px;
 cursor:pointer;
-transition:.25s;
+background:#00b0ff;
+color:white;
+transition:.2s;
 }
 button:active{transform:scale(.95)}
-.green{background:#00e676}
-.blue{background:#00b0ff}
-.orange{background:#ff9100}
-.red{background:#ff5252}
-.purple{background:#aa00ff}
-.gray{background:#9e9e9e}
 
-/* input */
 input{
 padding:12px;
-border-radius:12px;
-border:none;
 font-size:16px;
-width:70%;
+border-radius:10px;
+border:none;
+width:80%;
 max-width:260px;
 }
 
-.footer{
-margin-top:40px;
+.note{
 opacity:.75;
 font-size:.9rem;
+margin-top:20px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ✨ particles -->
-<script>
-for(let i=0;i<40;i++){
-let p=document.createElement("div");
-p.className="particle";
-p.style.left=Math.random()*100+"vw";
-p.style.animationDuration=(6+Math.random()*6)+"s";
-p.style.opacity=Math.random();
-document.body.appendChild(p);
-}
-</script>
-
-<h2 id="countdown" class="fade">Starting...</h2>
+<h2 id="countdown">Starting in 5</h2>
 
 <div id="newyear" class="hidden fade">
 <h1>🎊 HAPPY NEW YEAR 2026 🎊</h1>
-<div class="gold">THIS YEAR SHOULD BE MEMORABLE</div>
+<p><b>This year should be memorable</b></p>
 </div>
 
 <div id="nameBox" class="hidden fade">
-<p>What should KA call you? *</p>
-<input id="name" placeholder="Your name">
+<p>Enter your name (required)</p>
+<input id="username" placeholder="Your name">
 <br><br>
-<button class="green" onclick="saveName()">Continue</button>
+<button onclick="saveName()">Continue</button>
 </div>
 
 <div id="q1" class="hidden fade">
-<p>🙂 How are you?</p>
-<button class="green" onclick="q1('Good')">Good</button>
-<button class="blue" onclick="q1('Fine')">Fine</button>
-<button class="purple" onclick="q1('Just like you')">Just like you</button>
-<button class="gray" onclick="q1('Prefer not to say')">Don't want to tell</button>
+<p>How are you?</p>
+<button onclick="next1('Good')">Good</button>
+<button onclick="next1('Fine')">Fine</button>
+<button onclick="next1('Just like you')">Just like you</button>
+<button onclick="next1('Prefer not to say')">Don't want to tell</button>
 </div>
 
 <div id="q2" class="hidden fade">
-<p>🎮 Play a game with KA today?</p>
-<button class="green" onclick="q2('Yes')">YES</button>
-<button class="green" onclick="q2('Yes')">YES</button>
-<button class="orange" onclick="q2('Let KA decide')">LET KA DECIDE</button>
+<p>Play a game with KA today?</p>
+<button onclick="next2('Yes')">YES</button>
+<button onclick="next2('Yes')">YES</button>
+<button onclick="next2('Let KA decide')">LET KA DECIDE</button>
 </div>
 
 <div id="q3" class="hidden fade">
-<p>🌟 How you see yourself this year?</p>
-<button class="blue" onclick="q3('Relaxed')">Relaxed</button>
-<button class="red" onclick="q3('Stressful')">Stressful</button>
-<button class="purple" onclick="q3('Thriller')">Thriller</button>
+<p>How do you see yourself this year?</p>
+<button onclick="next3('Relaxed')">Relaxed</button>
+<button onclick="next3('Stressful')">Stressful</button>
+<button onclick="next3('Thriller')">Thriller</button>
 </div>
 
 <div id="q4" class="hidden fade">
-<p>🎯 What is your New Year Resolution?</p>
-<button class="green" onclick="finish('Will tell later')">I WILL TELL YOU ON CHAT</button>
-<button class="red" onclick="finish('Private')">NONE OF YOUR BUSINESS</button>
-<button class="orange" onclick="finish('Not decided')">I DIDN'T DECIDED YET</button>
+<p>Your New Year Resolution?</p>
+<button onclick="finish('WORK ON MYSELF')">WORK ON MYSELF</button>
+<button onclick="finish('STAY CONSISTENT')">STAY CONSISTENT</button>
+<button onclick="finish('NOT DECIDED YET')">NOT DECIDED YET</button>
 </div>
 
 <div id="result" class="hidden fade"></div>
 
-<div class="footer">Made by one and only <b>KA</b></div>
+<p class="note">Made by one and only <b>KA</b></p>
 
 <script>
-/* ⏱ TEST COUNTDOWN – 5 seconds */
 let t=5;
-let cd=document.getElementById("countdown");
 let timer=setInterval(()=>{
-cd.innerText="Starting in "+t;
+document.getElementById("countdown").innerText="Starting in "+t;
 t--;
 if(t<0){
 clearInterval(timer);
-cd.classList.add("hidden");
-newyear.classList.remove("hidden");
-nameBox.classList.remove("hidden");
+document.getElementById("countdown").classList.add("hidden");
+document.getElementById("newyear").classList.remove("hidden");
+document.getElementById("nameBox").classList.remove("hidden");
 }
 },1000);
 
 let NAME="",A1="",A2="",A3="",A4="";
 
 function saveName(){
-NAME=name.value.trim();
-if(!NAME){alert("Please enter your name 🙂");return;}
-nameBox.classList.add("hidden");
-q1.classList.remove("hidden");
+let v=document.getElementById("username").value.trim();
+if(v===""){alert("Name is required");return;}
+NAME=v;
+document.getElementById("nameBox").classList.add("hidden");
+document.getElementById("q1").classList.remove("hidden");
 }
 
-function q1(v){
+function next1(v){
 A1=v;
 q1.classList.add("hidden");
 q2.classList.remove("hidden");
 }
-function q2(v){
+function next2(v){
 A2=v;
 q2.classList.add("hidden");
 q3.classList.remove("hidden");
 }
-function q3(v){
+function next3(v){
 A3=v;
 q3.classList.add("hidden");
 q4.classList.remove("hidden");
@@ -189,15 +153,16 @@ q4.classList.remove("hidden");
 function finish(v){
 A4=v;
 q4.classList.add("hidden");
-result.classList.remove("hidden");
-result.innerHTML=`
-<h3>✅ Response Recorded</h3>
+let r=document.getElementById("result");
+r.classList.remove("hidden");
+r.innerHTML=`
+<h3>Response Recorded ✅</h3>
 <p><b>Name:</b> ${NAME}</p>
-<p><b>How are you:</b> ${A1}</p>
+<p><b>How you are:</b> ${A1}</p>
 <p><b>Game with KA:</b> ${A2}</p>
 <p><b>This year:</b> ${A3}</p>
 <p><b>Resolution:</b> ${A4}</p>
-<p style="opacity:.7">📸 Take screenshot & send to KA</p>
+<p>📸 Take screenshot & send to KA</p>
 `;
 }
 </script>
