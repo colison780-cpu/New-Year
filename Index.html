@@ -39,8 +39,8 @@ h1 {
 }
 
 #countdown {
-    font-size: 1.4rem;
-    margin: 12px 0;
+    font-size: 1.5rem;
+    margin: 15px 0;
 }
 
 .section {
@@ -49,7 +49,7 @@ h1 {
 }
 
 button {
-    padding: 12px 20px;
+    padding: 12px 22px;
     margin: 10px;
     font-size: 1rem;
     border: none;
@@ -85,15 +85,18 @@ button {
 <canvas id="fireworks"></canvas>
 
 <div class="center">
-    <h1>🎉 Happy New Year 2026 🎆</h1>
+    <!-- Hidden until countdown ends -->
+    <h1 id="title" style="display:none;">🎉 Happy New Year 2026 🎆</h1>
+
+    <!-- Countdown always visible first -->
     <div id="countdown">Loading countdown...</div>
 
     <!-- Game Question -->
     <div class="section" id="gameSection">
         <p>Do you want to play any game?</p>
         <p>🏸 Badminton or 🎮 Life Game?</p>
-        <button class="yes" onclick="chooseGame(true)">YES</button>
-        <button class="no" onclick="chooseGame(false)">NO</button>
+        <button class="yes" onclick="chooseGame()">YES</button>
+        <button class="no" onclick="chooseGame()">NO</button>
     </div>
 
     <!-- Feedback -->
@@ -108,35 +111,43 @@ button {
 </div>
 
 <div class="madeby">
-    Made by one and only <b>KAVYA AGGARWAL</b>
+    Made by one and only <b>Rakesh</b>
 </div>
 
 <script>
 /* ===== COUNTDOWN (IST) ===== */
 const targetIST = new Date("2026-01-01T00:00:00+05:30").getTime();
 const cd = document.getElementById("countdown");
+const title = document.getElementById("title");
 const gameSection = document.getElementById("gameSection");
+
+let newYearStarted = false;
 
 setInterval(() => {
     const now = new Date().getTime();
     const diff = targetIST - now;
 
-    if (diff <= 0) {
-        cd.innerHTML = "🎆 Welcome 2026! 🎉";
+    if (diff <= 0 && !newYearStarted) {
+        newYearStarted = true;
+
+        cd.style.display = "none";
+        title.style.display = "block";
         gameSection.style.display = "block";
         return;
     }
 
-    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((diff % (1000 * 60)) / 1000);
+    if (!newYearStarted) {
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
 
-    cd.innerHTML = `${d}d ${h}h ${m}m ${s}s (IST)`;
+        cd.innerHTML = `${d}d ${h}h ${m}m ${s}s (IST)`;
+    }
 }, 1000);
 
-/* ===== GAME LOGIC ===== */
-function chooseGame(yes) {
+/* ===== GAME FLOW ===== */
+function chooseGame() {
     gameSection.style.display = "none";
     document.getElementById("feedbackSection").style.display = "block";
 }
@@ -144,12 +155,12 @@ function chooseGame(yes) {
 /* ===== FEEDBACK ===== */
 function sendFeedback(msg) {
     document.getElementById("feedbackSection").style.display = "none";
-    document.getElementById("thankyou").style.display = "block";
-    document.getElementById("thankyou").innerHTML =
-        `❤️ Thank you for your feedback! <br><br> You said: <b>${msg}</b>`;
+    const ty = document.getElementById("thankyou");
+    ty.style.display = "block";
+    ty.innerHTML = `❤️ Thank you for your feedback!<br>You said: <b>${msg}</b>`;
 }
 
-/* ===== FULLSCREEN FIREWORKS ===== */
+/* ===== FIREWORKS ===== */
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
 
@@ -169,7 +180,7 @@ class Firework {
             this.particles.push({
                 x: this.x,
                 y: this.y,
-                angle: Math.random() * 2 * Math.PI,
+                angle: Math.random() * Math.PI * 2,
                 speed: Math.random() * 5 + 2,
                 life: 60
             });
