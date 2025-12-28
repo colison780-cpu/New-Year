@@ -86,20 +86,16 @@ button {
 
 <div class="center">
 
-    <!-- Hidden until countdown ends -->
     <h1 id="title" style="display:none;">🎉 Happy New Year 2026 🎆</h1>
 
-    <!-- Countdown -->
-    <div id="countdown">Loading countdown...</div>
+    <div id="countdown">Starting...</div>
 
-    <!-- Question -->
     <div class="section" id="gameSection">
         <p style="font-size:1.2rem;">🎮 Do you wanna play a game today?</p>
         <button class="yes" onclick="chooseGame()">YES</button>
         <button class="no" onclick="chooseGame()">NO</button>
     </div>
 
-    <!-- Feedback -->
     <div class="section feedback" id="feedbackSection">
         <p>✨ How was this New Year surprise?</p>
         <button onclick="sendFeedback('Amazing 😍')">😍 Amazing</button>
@@ -111,12 +107,13 @@ button {
 </div>
 
 <div class="madeby">
-    Made by one and only <b>KAVYA AGGARWAL</b>
+    Made by one and only <b>Rakesh</b>
 </div>
 
 <script>
-/* ===== COUNTDOWN (IST) ===== */
-const targetIST = new Date("2026-01-01T00:00:00+05:30").getTime();
+/* ===== 10 SECOND TEST COUNTDOWN ===== */
+const targetTime = new Date(Date.now() + 10000).getTime();
+
 const cd = document.getElementById("countdown");
 const title = document.getElementById("title");
 const gameSection = document.getElementById("gameSection");
@@ -125,7 +122,7 @@ let started = false;
 
 setInterval(() => {
     const now = new Date().getTime();
-    const diff = targetIST - now;
+    const diff = targetTime - now;
 
     if (diff <= 0 && !started) {
         started = true;
@@ -136,12 +133,8 @@ setInterval(() => {
     }
 
     if (!started) {
-        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-        cd.innerHTML = `${d}d ${h}h ${m}m ${s}s (IST)`;
+        const s = Math.floor(diff / 1000);
+        cd.innerHTML = `Starting in ${s} seconds...`;
     }
 }, 1000);
 
