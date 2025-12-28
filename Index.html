@@ -39,10 +39,11 @@ h1 {
 }
 
 .subtitle {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 15px;
-    opacity: 0.9;
-    animation: fadeUp 1.2s ease;
+    color: gold;
+    font-weight: bold;
+    animation: goldGlow 2s infinite alternate, fadeUp 1.2s ease;
 }
 
 #countdown {
@@ -80,9 +81,20 @@ button {
     opacity: 0.85;
 }
 
+.tap {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-top: 10px;
+}
+
 @keyframes glow {
     from { text-shadow: 0 0 10px #fff; }
     to { text-shadow: 0 0 35px #00ffff; }
+}
+
+@keyframes goldGlow {
+    from { text-shadow: 0 0 10px gold; }
+    to { text-shadow: 0 0 30px goldenrod; }
 }
 
 @keyframes zoom {
@@ -104,16 +116,25 @@ button {
 
 <body>
 
+<!-- 🎵 BACKGROUND MUSIC -->
+<audio id="music" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/08/04/audio_5b3c4bbf7a.mp3" type="audio/mpeg">
+</audio>
+
 <canvas id="bg"></canvas>
 
 <div class="center">
 
     <h1 id="title" style="display:none;">🎊 HAPPY NEW YEAR 2026 🎊</h1>
+
     <div class="subtitle" id="subtitle" style="display:none;">
         This year should be memorable
     </div>
 
     <div id="countdown">Starting...</div>
+    <div class="tap" id="tap" style="display:none;">
+        🔊 Tap anywhere if music doesn’t start
+    </div>
 
     <!-- Q1 -->
     <div class="section" id="q1">
@@ -150,24 +171,28 @@ button {
 
 <script>
 /* ===== 10 SECOND COUNTDOWN ===== */
-const target = new Date(Date.now() + 10000).getTime();
+const target = Date.now() + 10000;
 const cd = document.getElementById("countdown");
 const title = document.getElementById("title");
 const subtitle = document.getElementById("subtitle");
+const music = document.getElementById("music");
+const tap = document.getElementById("tap");
 
 let started = false;
 let ans1="", ans2="", ans3="";
 
 setInterval(() => {
-    const now = Date.now();
-    const diff = target - now;
+    const diff = target - Date.now();
 
     if (diff <= 0 && !started) {
         started = true;
         cd.style.display = "none";
         title.style.display = "block";
         subtitle.style.display = "block";
-        document.getElementById("q1").style.display = "block";
+        q1.style.display = "block";
+        tap.style.display = "block";
+        music.volume = 0.4;
+        music.play().catch(()=>{});
         return;
     }
 
@@ -176,17 +201,13 @@ setInterval(() => {
     }
 }, 1000);
 
+document.body.addEventListener("click", () => {
+    music.play().catch(()=>{});
+});
+
 /* ===== ANSWERS ===== */
-function a1(v){
-    ans1=v;
-    q1.style.display="none";
-    q2.style.display="block";
-}
-function a2(v){
-    ans2=v;
-    q2.style.display="none";
-    q3.style.display="block";
-}
+function a1(v){ ans1=v; q1.style.display="none"; q2.style.display="block"; }
+function a2(v){ ans2=v; q2.style.display="none"; q3.style.display="block"; }
 function a3(v){
     ans3=v;
     q3.style.display="none";
@@ -205,14 +226,10 @@ function a3(v){
 const canvas=document.getElementById("bg");
 const ctx=canvas.getContext("2d");
 
-function resize(){
-    canvas.width=innerWidth;
-    canvas.height=innerHeight;
-}
-resize();
-addEventListener("resize",resize);
+function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+resize(); addEventListener("resize",resize);
 
-let stars=Array.from({length:130},()=>({
+let stars=Array.from({length:140},()=>({
     x:Math.random()*canvas.width,
     y:Math.random()*canvas.height,
     r:Math.random()*2+1,
