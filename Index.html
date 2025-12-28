@@ -70,6 +70,7 @@ button {
 .red { background: #ff5252; }
 .blue { background: #00b0ff; }
 .purple { background: #aa00ff; }
+.gray { background: #9e9e9e; }
 
 .madeby {
     position: fixed;
@@ -121,26 +122,35 @@ button {
 
 <!-- Q1 -->
 <div class="section" id="q1">
-<p>🎮 play a game with KA today?</p>
-<button class="green" onclick="q1a('Yes')">YES</button>
-<button class="green" onclick="q1a('Yes')">YES</button>
-<button class="orange" onclick="q1a('Let KA decide')">LET KA DECIDE FOR YOU</button>
+<p>🙂 How are you?</p>
+<button class="green" onclick="q1a('Good')">Good</button>
+<button class="blue" onclick="q1a('Fine')">Fine</button>
+<button class="purple" onclick="q1a('Just like you')">Just like you</button>
+<button class="gray" onclick="q1a('Prefer not to say')">Don't want to tell</button>
 </div>
 
 <!-- Q2 -->
 <div class="section" id="q2">
-<p>🌟 How you see yourself this year</p>
-<button class="blue" onclick="q2a('Relaxed')">Relaxed</button>
-<button class="red" onclick="q2a('Stressful')">Stressful</button>
-<button class="purple" onclick="q2a('Thriller')">Thriller</button>
+<p>🎮 play a game with KA today?</p>
+<button class="green" onclick="q2a('Yes')">YES</button>
+<button class="green" onclick="q2a('Yes')">YES</button>
+<button class="orange" onclick="q2a('Let KA decide')">LET KA DECIDE FOR YOU</button>
 </div>
 
 <!-- Q3 -->
 <div class="section" id="q3">
+<p>🌟 How you see yourself this year</p>
+<button class="blue" onclick="q3a('Relaxed')">Relaxed</button>
+<button class="red" onclick="q3a('Stressful')">Stressful</button>
+<button class="purple" onclick="q3a('Thriller')">Thriller</button>
+</div>
+
+<!-- Q4 -->
+<div class="section" id="q4">
 <p>🎯 What is your New Year Resolution</p>
-<button class="green" onclick="q3a('Private for now')">I WILL TELL YOU ON CHAT</button>
-<button class="red" onclick="q3a('Private')">NONE OF YOUR BUSINESS</button>
-<button class="orange" onclick="q3a('Still figuring it out')">I DIDN'T DECIDED YET</button>
+<button class="green" onclick="q4a('Will share later')">I WILL TELL YOU ON CHAT</button>
+<button class="red" onclick="q4a('Private')">NONE OF YOUR BUSINESS</button>
+<button class="orange" onclick="q4a('Still figuring it out')">I DIDN'T DECIDED YET</button>
 </div>
 
 <!-- RESULT -->
@@ -156,7 +166,7 @@ const cd = document.getElementById("countdown");
 const music = document.getElementById("music");
 const tap = document.getElementById("tap");
 
-let started=false, A1="", A2="", A3="";
+let started=false, A0="", A1="", A2="", A3="";
 
 setInterval(()=>{
     const d = target - Date.now();
@@ -174,22 +184,24 @@ setInterval(()=>{
 
 document.body.onclick=()=> music.play().catch(()=>{});
 
-function q1a(v){A1=v; q1.style.display="none"; q2.style.display="block";}
-function q2a(v){A2=v; q2.style.display="none"; q3.style.display="block";}
-function q3a(v){
+function q1a(v){A0=v; q1.style.display="none"; q2.style.display="block";}
+function q2a(v){A1=v; q2.style.display="none"; q3.style.display="block";}
+function q3a(v){A2=v; q3.style.display="none"; q4.style.display="block";}
+function q4a(v){
     A3=v;
-    q3.style.display="none";
+    q4.style.display="none";
     result.style.display="block";
     result.innerHTML=`
     <p><b>Response recorded ✅</b></p>
     <hr>
+    <p>🙂 <b>How you are:</b> ${A0}</p>
     <p>🎮 <b>Game with KA:</b> ${A1}</p>
     <p>🌟 <b>This year:</b> ${A2}</p>
     <p>🎯 <b>Resolution:</b> ${A3}</p>
     <p style="opacity:.7;">📸 Take a screenshot and send to KA</p>`;
 }
 
-/* background */
+/* background animation */
 const c=document.getElementById("bg"),x=c.getContext("2d");
 function r(){c.width=innerWidth;c.height=innerHeight}r();onresize=r;
 let s=[...Array(120)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+1,dx:.4,dy:.4}));
