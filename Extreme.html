@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>New Year Old Style</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    margin: 0;
+    background: radial-gradient(circle at top, #1a1a2e, #000);
+    color: #fff;
+    font-family: "Georgia", serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 500px;
+  }
+
+  .time {
+    font-size: 26px;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+  }
+
+  .box {
+    min-height: 80px;
+    font-size: 30px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+
+  .box.show {
+    opacity: 1;
+  }
+
+  .footer {
+    margin-top: 25px;
+    font-size: 20px;
+    opacity: 0.85;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="time" id="liveTime">--:--:--</div>
+  <div class="box" id="mainText"></div>
+  <div class="footer">This year should be memorable for <b>you</b> ✨</div>
+</div>
+
+<script>
+  function getISTDate() {
+    const now = new Date();
+    const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+    return new Date(utc + 5.5 * 60 * 60 * 1000);
+  }
+
+  function updateLiveTime() {
+    const ist = getISTDate();
+    const h = String(ist.getHours()).padStart(2, "0");
+    const m = String(ist.getMinutes()).padStart(2, "0");
+    const s = String(ist.getSeconds()).padStart(2, "0");
+    document.getElementById("liveTime").innerText = `${h}:${m}:${s}`;
+  }
+
+  function getGreeting() {
+    const h = getISTDate().getHours();
+    if (h >= 5 && h < 12) return "Good Morning ☀️";
+    if (h >= 12 && h < 17) return "Good Afternoon 🌤️";
+    if (h >= 17 && h < 21) return "Good Evening 🌆";
+    return "Good Night 🌙";
+  }
+
+  function getCountdown() {
+    const now = getISTDate();
+    const newYear = new Date(now.getFullYear() + 1, 0, 1);
+    const diff = newYear - now;
+
+    if (diff <= 0) return "🎉 Happy New Year 🎉";
+
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const m = Math.floor((diff / (1000 * 60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    return `${d}d ${h}h ${m}m ${s}s`;
+  }
+
+  const texts = [
+    () => getGreeting(),
+    () => "⏳ Countdown to New Year",
+    () => getCountdown()
+  ];
+
+  let index = 0;
+  const box = document.getElementById("mainText");
+
+  function showNext() {
+    box.classList.remove("show");
+
+    setTimeout(() => {
+      box.innerText = texts[index]();
+      box.classList.add("show");
+      index = (index + 1) % texts.length;
+    }, 1000);
+  }
+
+  updateLiveTime();
+  showNext();
+
+  setInterval(updateLiveTime, 1000);
+  setInterval(showNext, 5000);
+</script>
+
+</body>
+</html>
