@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>New Year Countdown</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .time {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .greeting {
+      font-size: 26px;
+      margin-bottom: 25px;
+    }
+
+    .countdown {
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .message {
+      font-size: 22px;
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="time" id="liveTime">--:--:--</div>
+  <div class="greeting" id="greetingText"></div>
+  <div class="countdown" id="countdownText">Loading...</div>
+  <div class="message">This year should be memorable for <b>you</b> ✨</div>
+
+  <script>
+    function getISTDate() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      return new Date(utc + (5.5 * 60 * 60 * 1000));
+    }
+
+    function updateTimeAndGreeting() {
+      const ist = getISTDate();
+
+      let hours = ist.getHours();
+      let minutes = ist.getMinutes();
+      let seconds = ist.getSeconds();
+
+      hours = String(hours).padStart(2, '0');
+      minutes = String(minutes).padStart(2, '0');
+      seconds = String(seconds).padStart(2, '0');
+
+      document.getElementById("liveTime").innerText =
+        `${hours}:${minutes}:${seconds}`;
+
+      let greeting = "Hello";
+      const h = ist.getHours();
+
+      if (h >= 5 && h < 12) greeting = "Good Morning ☀️";
+      else if (h >= 12 && h < 17) greeting = "Good Afternoon 🌤️";
+      else if (h >= 17 && h < 21) greeting = "Good Evening 🌆";
+      else greeting = "Good Night 🌙";
+
+      document.getElementById("greetingText").innerText = greeting;
+    }
+
+    function updateCountdown() {
+      const nowIST = getISTDate();
+
+      const newYear = new Date(
+        nowIST.getFullYear() + 1,
+        0, 1, 0, 0, 0
+      );
+
+      const diff = newYear - nowIST;
+
+      if (diff <= 0) {
+        document.getElementById("countdownText").innerText =
+          "🎉 Happy New Year! 🎉";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("countdownText").innerText =
+        `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    function updateAll() {
+      updateTimeAndGreeting();
+      updateCountdown();
+    }
+
+    updateAll();
+    setInterval(updateAll, 1000);
+  </script>
+
+</body>
+</html>
