@@ -7,67 +7,26 @@
 
 <style>
 html,body{
-    margin:0;
-    padding:0;
-    height:100%;
-    background:linear-gradient(135deg,#020024,#090979,#00d4ff);
-    overflow:hidden;
-    font-family:Arial,sans-serif;
-    color:white;
-}
+margin:0;height:100%;background:linear-gradient(135deg,#020024,#090979,#00d4ff);
+overflow:hidden;font-family:Arial;color:white}
 canvas{position:fixed;top:0;left:0}
-.center{
-    position:absolute;
-    top:50%;
-    transform:translateY(-50%);
-    width:100%;
-    text-align:center;
-    padding:15px;
-    z-index:5;
-}
-h1{font-size:2.3rem;animation:glow 2s infinite alternate}
-.subtitle{
-    color:gold;
-    font-weight:bold;
-    font-size:1.2rem;
-    animation:goldGlow 2s infinite alternate;
-}
-#countdown{font-size:1.6rem;margin-top:10px}
-.section{display:none;margin-top:20px;animation:fadeUp .7s ease}
-button{
-    padding:12px 22px;
-    margin:8px;
-    border:none;
-    border-radius:30px;
-    font-size:1rem;
-    cursor:pointer;
-}
+.center{position:absolute;top:50%;transform:translateY(-50%);width:100%;text-align:center;z-index:5;padding:15px}
+h1{font-size:2.4rem;text-shadow:0 0 25px cyan}
+#countdown{font-size:1.8rem}
+.subtitle{color:gold;font-weight:bold;font-size:1.3rem;min-height:1.5em}
+.section{display:none;margin-top:20px;animation:fadeUp .6s}
+button{padding:12px 22px;margin:6px;border:none;border-radius:30px;font-size:1rem}
 .green{background:#00e676}
+.blue{background:#00b0ff}
 .orange{background:#ff9100}
 .red{background:#ff5252}
-.blue{background:#00b0ff}
 .purple{background:#aa00ff}
 .gray{background:#9e9e9e}
-.madeby{
-    position:fixed;
-    bottom:10px;
-    width:100%;
-    text-align:center;
-    opacity:.85;
-    font-size:.9rem;
-}
-@keyframes glow{
-    from{text-shadow:0 0 10px white}
-    to{text-shadow:0 0 30px cyan}
-}
-@keyframes goldGlow{
-    from{text-shadow:0 0 10px gold}
-    to{text-shadow:0 0 25px goldenrod}
-}
-@keyframes fadeUp{
-    from{opacity:0;transform:translateY(20px)}
-    to{opacity:1;transform:translateY(0)}
-}
+.dots{margin-top:10px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#555;margin:3px}
+.active{background:white}
+.madeby{position:fixed;bottom:10px;width:100%;text-align:center;font-size:.9rem;opacity:.8}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 
@@ -76,113 +35,126 @@ button{
 <canvas id="bg"></canvas>
 
 <div class="center">
-
 <h1 id="title" style="display:none;">🎊 HAPPY NEW YEAR 2026 🎊</h1>
-<div class="subtitle" id="subtitle" style="display:none;">
-This year should be memorable
-</div>
-
+<div class="subtitle" id="typed"></div>
 <div id="countdown"></div>
 
-<!-- Q1 -->
-<div class="section" id="q1">
-<p>🙂 How are you?</p>
-<button class="green" onclick="q1('Good')">Good</button>
-<button class="blue" onclick="q1('Fine')">Fine</button>
-<button class="purple" onclick="q1('Just like you')">Just like you</button>
-<button class="gray" onclick="q1('Prefer not to say')">Don't want to tell</button>
+<div class="section" id="nameBox">
+<p>What should KA call you?</p>
+<input id="uname" placeholder="Your name (optional)" style="padding:10px;border-radius:10px;border:none">
+<br><br>
+<button class="green" onclick="saveName()">Continue</button>
 </div>
 
-<!-- Q2 -->
+<div class="dots" id="dots">
+<span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+</div>
+
+<div class="section" id="q1">
+<p id="greet"></p>
+<button class="green" onclick="next(1)">Good</button>
+<button class="blue" onclick="next(1)">Fine</button>
+<button class="purple" onclick="next(1)">Just like you</button>
+<button class="gray" onclick="next(1)">Don't want to tell</button>
+</div>
+
 <div class="section" id="q2">
 <p>🎮 play a game with KA today?</p>
-<button class="green" onclick="q2('Yes')">YES</button>
-<button class="green" onclick="q2('Yes')">YES</button>
-<button class="orange" onclick="q2('Let KA decide')">LET KA DECIDE FOR YOU</button>
+<button class="green" onclick="next(2)">YES</button>
+<button class="green" onclick="next(2)">YES</button>
+<button class="orange" onclick="next(2)">LET KA DECIDE</button>
 </div>
 
-<!-- Q3 -->
 <div class="section" id="q3">
 <p>🌟 How you see yourself this year</p>
-<button class="blue" onclick="q3('Relaxed')">Relaxed</button>
-<button class="red" onclick="q3('Stressful')">Stressful</button>
-<button class="purple" onclick="q3('Thriller')">Thriller</button>
+<button class="blue" onclick="mood(0.3)">Relaxed</button>
+<button class="red" onclick="mood(1)">Stressful</button>
+<button class="purple" onclick="mood(2)">Thriller</button>
 </div>
 
-<!-- Q4 -->
 <div class="section" id="q4">
 <p>🎯 What is your New Year Resolution</p>
-<button class="green" onclick="finish('Will share later')">I WILL TELL YOU ON CHAT</button>
-<button class="red" onclick="finish('Private')">NONE OF YOUR BUSINESS</button>
-<button class="orange" onclick="finish('Still deciding')">I DIDN'T DECIDED YET</button>
+<button class="green" onclick="finish()">I WILL TELL YOU ON CHAT</button>
+<button class="red" onclick="finish()">NONE OF YOUR BUSINESS</button>
+<button class="orange" onclick="finish()">I DIDN'T DECIDED YET</button>
 </div>
 
 <div class="section" id="result"></div>
-
 </div>
 
-<!-- ✅ CHANGED HERE -->
 <div class="madeby">Made by one and only <b>KA</b></div>
 
 <script>
-const target = new Date("2026-01-01T00:00:00+05:30").getTime();
-const now = Date.now();
-const cd = document.getElementById("countdown");
+/* ⏱ TEST TIMER – 5 SECONDS */
+const target = Date.now()+5000;
+const cd=document.getElementById("countdown");
+const dots=document.querySelectorAll(".dot");
+let step=0,speed=.5;
 
-let A0="",A1="",A2="",A3="";
+const timer=setInterval(()=>{
+let d=target-Date.now();
+if(d<=0){clearInterval(timer);start();}
+else cd.innerHTML=Math.ceil(d/1000)+"s";
+},200);
 
-if(now < target){
-    const timer = setInterval(()=>{
-        const diff = target - Date.now();
-        if(diff<=0){
-            clearInterval(timer);
-            startNewYear();
-        }else{
-            const h=Math.floor(diff/3600000);
-            const m=Math.floor((diff%3600000)/60000);
-            const s=Math.floor((diff%60000)/1000);
-            cd.innerHTML=`${h}h ${m}m ${s}s left`;
-        }
-    },1000);
-}else{
-    startNewYear();
+function start(){
+cd.style.display="none";
+title.style.display="block";
+typeText("THIS YEAR SHOULD BE MEMORABLE");
+confetti();
+nameBox.style.display="block";
 }
 
-function startNewYear(){
-    cd.style.display="none";
-    title.style.display="block";
-    subtitle.style.display="block";
-    q1.style.display="block";
+function typeText(t){
+let i=0;typed.innerHTML="";
+let iv=setInterval(()=>{
+typed.innerHTML+=t[i++];if(i>=t.length)clearInterval(iv);
+},80);
 }
 
-function q1(v){A0=v;q1.style.display="none";q2.style.display="block";}
-function q2(v){A1=v;q2.style.display="none";q3.style.display="block";}
-function q3(v){A2=v;q3.style.display="none";q4.style.display="block";}
-function finish(v){
-    A3=v;
-    q4.style.display="none";
-    result.style.display="block";
-    result.innerHTML=`
-    <p><b>Response recorded ✅</b></p><hr>
-    <p>🙂 <b>How you are:</b> ${A0}</p>
-    <p>🎮 <b>Game with KA:</b> ${A1}</p>
-    <p>🌟 <b>This year:</b> ${A2}</p>
-    <p>🎯 <b>Resolution:</b> ${A3}</p>
-    <p style="opacity:.7;">📸 Take screenshot and send to KA</p>`;
+function saveName(){
+nameBox.style.display="none";
+q1.style.display="block";
+dots[0].classList.remove("active");
+dots[1].classList.add("active");
+let h=new Date().getHours();
+let g=h<12?"Good Morning":h<18?"Good Evening":"Good Night";
+greet.innerHTML=`${g}${uname.value?", "+uname.value:""} 😊 How are you?`;
 }
 
+function next(n){
+document.getElementById("q"+n).style.display="none";
+document.getElementById("q"+(n+1)).style.display="block";
+dots[n].classList.remove("active");
+dots[n+1].classList.add("active");
+}
+
+function mood(s){speed=s;next(3);}
+function finish(){
+q4.style.display="none";
+dots[3].classList.remove("active");
+result.style.display="block";
+result.innerHTML="<b>Response recorded ✅</b><br><br>📸 Take screenshot & send to KA";
+}
+
+/* 🎊 CONFETTI */
+function confetti(){
+for(let i=0;i<120;i++){
+setTimeout(()=>{particles.push({x:Math.random()*w,y:-10,dy:Math.random()*3+2});},i*20);
+}
+}
+
+/* BACKGROUND */
 const c=document.getElementById("bg"),x=c.getContext("2d");
-function r(){c.width=innerWidth;c.height=innerHeight}r();onresize=r;
-let s=[...Array(120)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+1,dx:.4,dy:.4}));
-(function a(){
-x.clearRect(0,0,c.width,c.height);
+let w,h;function r(){w=c.width=innerWidth;h=c.height=innerHeight}r();onresize=r;
+let stars=[...Array(120)].map(()=>({x:Math.random()*w,y:Math.random()*h}));
+let particles=[];
+(function anim(){
+x.clearRect(0,0,w,h);
 x.fillStyle="white";
-s.forEach(o=>{
-x.beginPath();x.arc(o.x,o.y,o.r,0,7);x.fill();
-o.x+=o.dx;o.y+=o.dy;
-if(o.x>c.width||o.y>c.height){o.x=0;o.y=Math.random()*c.height;}
-});
-requestAnimationFrame(a);
+stars.forEach(s=>{x.fillRect(s.x,s.y,2,2);s.y+=speed;if(s.y>h)s.y=0;});
+particles.forEach(p=>{x.fillRect(p.x,p.y,3,3);p.y+=p.dy;});
+requestAnimationFrame(anim);
 })();
 </script>
 
