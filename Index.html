@@ -33,28 +33,27 @@ canvas {
 }
 
 h1 {
-    font-size: 2.4rem;
+    font-size: 2.3rem;
     margin-bottom: 5px;
-    animation: glow 2s infinite alternate, zoom 2s infinite alternate;
+    animation: glow 2s infinite alternate;
 }
 
 .subtitle {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
+    font-size: 1.2rem;
     color: gold;
     font-weight: bold;
-    animation: goldGlow 2s infinite alternate, fadeUp 1.2s ease;
+    animation: goldGlow 2s infinite alternate;
 }
 
 #countdown {
     font-size: 1.6rem;
-    animation: fadeBlink 1s infinite alternate;
+    margin-top: 10px;
 }
 
 .section {
     display: none;
     margin-top: 20px;
-    animation: fadeUp 1s ease forwards;
+    animation: fadeUp 0.8s ease forwards;
 }
 
 button {
@@ -67,9 +66,9 @@ button {
 }
 
 .green { background: #00e676; }
+.orange { background: #ff9100; }
 .red { background: #ff5252; }
 .blue { background: #00b0ff; }
-.orange { background: #ff9100; }
 .purple { background: #aa00ff; }
 
 .madeby {
@@ -83,175 +82,127 @@ button {
 
 .tap {
     font-size: 0.9rem;
-    opacity: 0.7;
+    opacity: 0.75;
     margin-top: 10px;
 }
 
 @keyframes glow {
-    from { text-shadow: 0 0 10px #fff; }
-    to { text-shadow: 0 0 35px #00ffff; }
+    from { text-shadow: 0 0 10px white; }
+    to { text-shadow: 0 0 30px cyan; }
 }
 
 @keyframes goldGlow {
     from { text-shadow: 0 0 10px gold; }
-    to { text-shadow: 0 0 30px goldenrod; }
-}
-
-@keyframes zoom {
-    from { transform: scale(1); }
-    to { transform: scale(1.05); }
+    to { text-shadow: 0 0 25px goldenrod; }
 }
 
 @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(25px); }
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeBlink {
-    from { opacity: 0.5; }
-    to { opacity: 1; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🎵 BACKGROUND MUSIC -->
 <audio id="music" loop>
-    <source src="https://cdn.pixabay.com/audio/2022/08/04/audio_5b3c4bbf7a.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/audio/2022/10/20/audio_946b6fa1d5.mp3" type="audio/mpeg">
 </audio>
 
 <canvas id="bg"></canvas>
 
 <div class="center">
 
-    <h1 id="title" style="display:none;">🎊 HAPPY NEW YEAR 2026 🎊</h1>
+<h1 id="title" style="display:none;">🎊 HAPPY NEW YEAR 2026 🎊</h1>
+<div class="subtitle" id="subtitle" style="display:none;">This year should be memorable</div>
 
-    <div class="subtitle" id="subtitle" style="display:none;">
-        This year should be memorable
-    </div>
+<div id="countdown">Starting...</div>
+<div class="tap" id="tap" style="display:none;">Tap anywhere to start music 🔊</div>
 
-    <div id="countdown">Starting...</div>
-    <div class="tap" id="tap" style="display:none;">
-        🔊 Tap anywhere if music doesn’t start
-    </div>
+<!-- Q1 -->
+<div class="section" id="q1">
+<p>🎮 play a game with KA today?</p>
+<button class="green" onclick="q1a('Yes')">YES</button>
+<button class="green" onclick="q1a('Yes')">YES</button>
+<button class="orange" onclick="q1a('Let KA decide')">LET KA DECIDE FOR YOU</button>
+</div>
 
-    <!-- Q1 -->
-    <div class="section" id="q1">
-        <p>🎮 play a game with KA today?</p>
-        <button class="green" onclick="a1('YES')">YES</button>
-        <button class="green" onclick="a1('YES')">YES</button>
-        <button class="orange" onclick="a1('LET KA DECIDE FOR YOU')">LET KA DECIDE FOR YOU</button>
-    </div>
+<!-- Q2 -->
+<div class="section" id="q2">
+<p>🌟 How you see yourself this year</p>
+<button class="blue" onclick="q2a('Relaxed')">Relaxed</button>
+<button class="red" onclick="q2a('Stressful')">Stressful</button>
+<button class="purple" onclick="q2a('Thriller')">Thriller</button>
+</div>
 
-    <!-- Q2 -->
-    <div class="section" id="q2">
-        <p>🌟 How you see yourself this year</p>
-        <button class="blue" onclick="a2('Relaxed')">Relaxed</button>
-        <button class="red" onclick="a2('Stressful')">Stressful</button>
-        <button class="purple" onclick="a2('Thriller')">Thriller</button>
-    </div>
+<!-- Q3 -->
+<div class="section" id="q3">
+<p>🎯 What is your New Year Resolution</p>
+<button class="green" onclick="q3a('Private for now')">I WILL TELL YOU ON CHAT</button>
+<button class="red" onclick="q3a('Private')">NONE OF YOUR BUSINESS</button>
+<button class="orange" onclick="q3a('Still figuring it out')">I DIDN'T DECIDED YET</button>
+</div>
 
-    <!-- Q3 -->
-    <div class="section" id="q3">
-        <p>🎯 What is your New Year Resolution</p>
-        <button class="green" onclick="a3('I WILL TELL YOU ON CHAT')">I WILL TELL YOU ON CHAT</button>
-        <button class="red" onclick="a3('NONE OF YOUR BUSINESS')">NONE OF YOUR BUSINESS</button>
-        <button class="orange" onclick="a3(\"I DIDN'T DECIDED YET\")">I DIDN'T DECIDED YET</button>
-    </div>
-
-    <!-- Result -->
-    <div class="section" id="result"></div>
+<!-- RESULT -->
+<div class="section" id="result"></div>
 
 </div>
 
-<div class="madeby">
-    Made by one and only <b>Rakesh</b>
-</div>
+<div class="madeby">Made by one and only <b>Rakesh</b></div>
 
 <script>
-/* ===== 10 SECOND COUNTDOWN ===== */
 const target = Date.now() + 10000;
 const cd = document.getElementById("countdown");
-const title = document.getElementById("title");
-const subtitle = document.getElementById("subtitle");
 const music = document.getElementById("music");
 const tap = document.getElementById("tap");
 
-let started = false;
-let ans1="", ans2="", ans3="";
+let started=false, A1="", A2="", A3="";
 
-setInterval(() => {
-    const diff = target - Date.now();
-
-    if (diff <= 0 && !started) {
-        started = true;
-        cd.style.display = "none";
-        title.style.display = "block";
-        subtitle.style.display = "block";
-        q1.style.display = "block";
-        tap.style.display = "block";
-        music.volume = 0.4;
-        music.play().catch(()=>{});
-        return;
+setInterval(()=>{
+    const d = target - Date.now();
+    if(d<=0 && !started){
+        started=true;
+        cd.style.display="none";
+        title.style.display="block";
+        subtitle.style.display="block";
+        q1.style.display="block";
+        tap.style.display="block";
+    } else if(!started){
+        cd.innerHTML = `Starting in ${Math.ceil(d/1000)} seconds...`;
     }
+},1000);
 
-    if (!started) {
-        cd.innerHTML = `Starting in ${Math.ceil(diff/1000)} seconds...`;
-    }
-}, 1000);
+document.body.onclick=()=> music.play().catch(()=>{});
 
-document.body.addEventListener("click", () => {
-    music.play().catch(()=>{});
-});
-
-/* ===== ANSWERS ===== */
-function a1(v){ ans1=v; q1.style.display="none"; q2.style.display="block"; }
-function a2(v){ ans2=v; q2.style.display="none"; q3.style.display="block"; }
-function a3(v){
-    ans3=v;
+function q1a(v){A1=v; q1.style.display="none"; q2.style.display="block";}
+function q2a(v){A2=v; q2.style.display="none"; q3.style.display="block";}
+function q3a(v){
+    A3=v;
     q3.style.display="none";
     result.style.display="block";
     result.innerHTML=`
-        <p>✅ <b>Response recorded</b></p>
-        <p>📸 Take a screenshot and send to <b>KA</b></p>
-        <hr>
-        <p>🎮 Game with KA: <b>${ans1}</b></p>
-        <p>🌟 This year: <b>${ans2}</b></p>
-        <p>🎯 Resolution: <b>${ans3}</b></p>
-    `;
+    <p><b>Response recorded ✅</b></p>
+    <hr>
+    <p>🎮 <b>Game with KA:</b> ${A1}</p>
+    <p>🌟 <b>This year:</b> ${A2}</p>
+    <p>🎯 <b>Resolution:</b> ${A3}</p>
+    <p style="opacity:.7;">📸 Take a screenshot and send to KA</p>`;
 }
 
-/* ===== BACKGROUND ANIMATION ===== */
-const canvas=document.getElementById("bg");
-const ctx=canvas.getContext("2d");
-
-function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
-resize(); addEventListener("resize",resize);
-
-let stars=Array.from({length:140},()=>({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    r:Math.random()*2+1,
-    dx:Math.random()*0.6,
-    dy:Math.random()*0.6
-}));
-
-function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="rgba(255,255,255,0.8)";
-    stars.forEach(s=>{
-        ctx.beginPath();
-        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-        ctx.fill();
-        s.x+=s.dx; s.y+=s.dy;
-        if(s.x>canvas.width||s.y>canvas.height){
-            s.x=0; s.y=Math.random()*canvas.height;
-        }
-    });
-    requestAnimationFrame(animate);
-}
-animate();
+/* background */
+const c=document.getElementById("bg"),x=c.getContext("2d");
+function r(){c.width=innerWidth;c.height=innerHeight}r();onresize=r;
+let s=[...Array(120)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+1,dx:.4,dy:.4}));
+(function a(){
+x.clearRect(0,0,c.width,c.height);
+x.fillStyle="white";
+s.forEach(o=>{
+x.beginPath();x.arc(o.x,o.y,o.r,0,7);x.fill();
+o.x+=o.dx;o.y+=o.dy;
+if(o.x>c.width||o.y>c.height){o.x=0;o.y=Math.random()*c.height;}
+});
+requestAnimationFrame(a);
+})();
 </script>
 
 </body>
