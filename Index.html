@@ -4,18 +4,21 @@
 <meta charset="UTF-8">
 <title>Happy New Year 2026 🎊</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 html,body{
-margin:0;height:100%;background:linear-gradient(135deg,#020024,#090979,#00d4ff);
+margin:0;height:100%;background:#020024;
 overflow:hidden;font-family:Arial;color:white}
 canvas{position:fixed;top:0;left:0}
-.center{position:absolute;top:50%;transform:translateY(-50%);width:100%;text-align:center;z-index:5;padding:15px}
-h1{font-size:2.4rem;text-shadow:0 0 25px cyan}
-#countdown{font-size:1.8rem}
+.center{
+position:absolute;top:50%;transform:translateY(-50%);
+width:100%;text-align:center;z-index:5;padding:15px}
+h1{font-size:2.3rem;text-shadow:0 0 20px cyan}
 .subtitle{color:gold;font-weight:bold;font-size:1.3rem;min-height:1.5em}
-.section{display:none;margin-top:20px;animation:fadeUp .6s}
-button{padding:12px 22px;margin:6px;border:none;border-radius:30px;font-size:1rem}
+#countdown{font-size:2rem}
+.section{display:none;margin-top:20px}
+button{
+padding:12px 22px;margin:6px;border:none;
+border-radius:30px;font-size:1rem}
 .green{background:#00e676}
 .blue{background:#00b0ff}
 .orange{background:#ff9100}
@@ -23,10 +26,13 @@ button{padding:12px 22px;margin:6px;border:none;border-radius:30px;font-size:1re
 .purple{background:#aa00ff}
 .gray{background:#9e9e9e}
 .dots{margin-top:10px}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:#555;margin:3px}
+.dot{
+display:inline-block;width:10px;height:10px;
+border-radius:50%;background:#555;margin:3px}
 .active{background:white}
-.madeby{position:fixed;bottom:10px;width:100%;text-align:center;font-size:.9rem;opacity:.8}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.madeby{
+position:fixed;bottom:10px;width:100%;
+text-align:center;font-size:.9rem;opacity:.8}
 </style>
 </head>
 
@@ -35,41 +41,47 @@ button{padding:12px 22px;margin:6px;border:none;border-radius:30px;font-size:1re
 <canvas id="bg"></canvas>
 
 <div class="center">
+
+<div id="countdown"></div>
+
 <h1 id="title" style="display:none;">🎊 HAPPY NEW YEAR 2026 🎊</h1>
 <div class="subtitle" id="typed"></div>
-<div id="countdown"></div>
 
 <div class="section" id="nameBox">
 <p>What should KA call you?</p>
-<input id="uname" placeholder="Your name (optional)" style="padding:10px;border-radius:10px;border:none">
+<input id="uname" placeholder="Your name (optional)"
+style="padding:10px;border-radius:10px;border:none">
 <br><br>
-<button class="green" onclick="saveName()">Continue</button>
+<button class="green" onclick="startQuestions()">Continue</button>
 </div>
 
-<div class="dots" id="dots">
-<span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+<div class="dots">
+<span class="dot active"></span>
+<span class="dot"></span>
+<span class="dot"></span>
+<span class="dot"></span>
 </div>
 
 <div class="section" id="q1">
 <p id="greet"></p>
-<button class="green" onclick="next(1)">Good</button>
-<button class="blue" onclick="next(1)">Fine</button>
-<button class="purple" onclick="next(1)">Just like you</button>
-<button class="gray" onclick="next(1)">Don't want to tell</button>
+<button class="green" onclick="nextQ(1)">Good</button>
+<button class="blue" onclick="nextQ(1)">Fine</button>
+<button class="purple" onclick="nextQ(1)">Just like you</button>
+<button class="gray" onclick="nextQ(1)">Don't want to tell</button>
 </div>
 
 <div class="section" id="q2">
-<p>🎮 play a game with KA today?</p>
-<button class="green" onclick="next(2)">YES</button>
-<button class="green" onclick="next(2)">YES</button>
-<button class="orange" onclick="next(2)">LET KA DECIDE</button>
+<p>🎮 Play a game with KA today?</p>
+<button class="green" onclick="nextQ(2)">YES</button>
+<button class="green" onclick="nextQ(2)">YES</button>
+<button class="orange" onclick="nextQ(2)">LET KA DECIDE</button>
 </div>
 
 <div class="section" id="q3">
 <p>🌟 How you see yourself this year</p>
-<button class="blue" onclick="mood(0.3)">Relaxed</button>
-<button class="red" onclick="mood(1)">Stressful</button>
-<button class="purple" onclick="mood(2)">Thriller</button>
+<button class="blue" onclick="setMood(0.3)">Relaxed</button>
+<button class="red" onclick="setMood(1)">Stressful</button>
+<button class="purple" onclick="setMood(2)">Thriller</button>
 </div>
 
 <div class="section" id="q4">
@@ -80,24 +92,27 @@ button{padding:12px 22px;margin:6px;border:none;border-radius:30px;font-size:1re
 </div>
 
 <div class="section" id="result"></div>
+
 </div>
 
 <div class="madeby">Made by one and only <b>KA</b></div>
 
 <script>
-/* ⏱ TEST TIMER – 5 SECONDS */
-const target = Date.now()+5000;
-const cd=document.getElementById("countdown");
-const dots=document.querySelectorAll(".dot");
-let step=0,speed=.5;
+/* ⏱ TEST COUNTDOWN: 5 SECONDS */
+let target = Date.now() + 5000;
+let cd = document.getElementById("countdown");
 
-const timer=setInterval(()=>{
-let d=target-Date.now();
-if(d<=0){clearInterval(timer);start();}
-else cd.innerHTML=Math.ceil(d/1000)+"s";
-},200);
+let timer = setInterval(()=>{
+let diff = target - Date.now();
+if(diff <= 0){
+clearInterval(timer);
+showNewYear();
+}else{
+cd.innerHTML = Math.ceil(diff/1000);
+}
+},300);
 
-function start(){
+function showNewYear(){
 cd.style.display="none";
 title.style.display="block";
 typeText("THIS YEAR SHOULD BE MEMORABLE");
@@ -105,56 +120,76 @@ confetti();
 nameBox.style.display="block";
 }
 
-function typeText(t){
-let i=0;typed.innerHTML="";
-let iv=setInterval(()=>{
-typed.innerHTML+=t[i++];if(i>=t.length)clearInterval(iv);
+function typeText(text){
+let i=0;
+let el=document.getElementById("typed");
+el.innerHTML="";
+let t=setInterval(()=>{
+el.innerHTML += text[i++];
+if(i>=text.length) clearInterval(t);
 },80);
 }
 
-function saveName(){
+function startQuestions(){
 nameBox.style.display="none";
 q1.style.display="block";
-dots[0].classList.remove("active");
-dots[1].classList.add("active");
 let h=new Date().getHours();
 let g=h<12?"Good Morning":h<18?"Good Evening":"Good Night";
-greet.innerHTML=`${g}${uname.value?", "+uname.value:""} 😊 How are you?`;
+greet.innerHTML = g + (uname.value ? ", "+uname.value : "") + " 😊 How are you?";
+activateDot(1);
 }
 
-function next(n){
+function nextQ(n){
 document.getElementById("q"+n).style.display="none";
 document.getElementById("q"+(n+1)).style.display="block";
-dots[n].classList.remove("active");
-dots[n+1].classList.add("active");
+activateDot(n+1);
 }
 
-function mood(s){speed=s;next(3);}
+function setMood(s){
+speed=s;
+nextQ(3);
+}
+
 function finish(){
 q4.style.display="none";
-dots[3].classList.remove("active");
 result.style.display="block";
 result.innerHTML="<b>Response recorded ✅</b><br><br>📸 Take screenshot & send to KA";
+activateDot(4);
+}
+
+function activateDot(n){
+document.querySelectorAll(".dot").forEach(d=>d.classList.remove("active"));
+if(n<5) document.querySelectorAll(".dot")[n-1].classList.add("active");
 }
 
 /* 🎊 CONFETTI */
+let conf=[];
 function confetti(){
 for(let i=0;i<120;i++){
-setTimeout(()=>{particles.push({x:Math.random()*w,y:-10,dy:Math.random()*3+2});},i*20);
+conf.push({x:Math.random()*w,y:-10,dy:Math.random()*3+2});
 }
 }
 
-/* BACKGROUND */
-const c=document.getElementById("bg"),x=c.getContext("2d");
-let w,h;function r(){w=c.width=innerWidth;h=c.height=innerHeight}r();onresize=r;
+/* ⭐ BACKGROUND */
+const c=document.getElementById("bg"),ctx=c.getContext("2d");
+let w,h,speed=0.5;
+function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+resize();onresize=resize;
+
 let stars=[...Array(120)].map(()=>({x:Math.random()*w,y:Math.random()*h}));
-let particles=[];
-(function anim(){
-x.clearRect(0,0,w,h);
-x.fillStyle="white";
-stars.forEach(s=>{x.fillRect(s.x,s.y,2,2);s.y+=speed;if(s.y>h)s.y=0;});
-particles.forEach(p=>{x.fillRect(p.x,p.y,3,3);p.y+=p.dy;});
-requestAnimationFrame(anim);
+
+(function animate(){
+ctx.clearRect(0,0,w,h);
+ctx.fillStyle="white";
+stars.forEach(s=>{
+ctx.fillRect(s.x,s.y,2,2);
+s.y+=speed;if(s.y>h)s.y=0;
+});
+conf.forEach(p=>{
+ctx.fillRect(p.x,p.y,3,3);
+p.y+=p.dy;
+});
+requestAnimationFrame(animate);
 })();
 </script>
 
