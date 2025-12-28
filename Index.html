@@ -49,11 +49,11 @@ h1 {
 }
 
 button {
-    padding: 12px 22px;
+    padding: 12px 24px;
     margin: 10px;
     font-size: 1rem;
     border: none;
-    border-radius: 25px;
+    border-radius: 30px;
     cursor: pointer;
 }
 
@@ -85,23 +85,23 @@ button {
 <canvas id="fireworks"></canvas>
 
 <div class="center">
+
     <!-- Hidden until countdown ends -->
     <h1 id="title" style="display:none;">🎉 Happy New Year 2026 🎆</h1>
 
-    <!-- Countdown always visible first -->
+    <!-- Countdown -->
     <div id="countdown">Loading countdown...</div>
 
-    <!-- Game Question -->
+    <!-- Question -->
     <div class="section" id="gameSection">
-        <p>Do you want to play any game?</p>
-        <p>🏸 Badminton or 🎮 Life Game?</p>
+        <p style="font-size:1.2rem;">🎮 Do you wanna play a game today?</p>
         <button class="yes" onclick="chooseGame()">YES</button>
         <button class="no" onclick="chooseGame()">NO</button>
     </div>
 
     <!-- Feedback -->
     <div class="section feedback" id="feedbackSection">
-        <p>How was this New Year surprise? ✨</p>
+        <p>✨ How was this New Year surprise?</p>
         <button onclick="sendFeedback('Amazing 😍')">😍 Amazing</button>
         <button onclick="sendFeedback('Good 🙂')">🙂 Good</button>
         <button onclick="sendFeedback('Okay 😐')">😐 Okay</button>
@@ -111,7 +111,7 @@ button {
 </div>
 
 <div class="madeby">
-    Made by one and only <b>Rakesh</b>
+    Made by one and only <b>KAVYA AGGARWAL</b>
 </div>
 
 <script>
@@ -121,22 +121,21 @@ const cd = document.getElementById("countdown");
 const title = document.getElementById("title");
 const gameSection = document.getElementById("gameSection");
 
-let newYearStarted = false;
+let started = false;
 
 setInterval(() => {
     const now = new Date().getTime();
     const diff = targetIST - now;
 
-    if (diff <= 0 && !newYearStarted) {
-        newYearStarted = true;
-
+    if (diff <= 0 && !started) {
+        started = true;
         cd.style.display = "none";
         title.style.display = "block";
         gameSection.style.display = "block";
         return;
     }
 
-    if (!newYearStarted) {
+    if (!started) {
         const d = Math.floor(diff / (1000 * 60 * 60 * 24));
         const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -146,7 +145,7 @@ setInterval(() => {
     }
 }, 1000);
 
-/* ===== GAME FLOW ===== */
+/* ===== QUESTION FLOW ===== */
 function chooseGame() {
     gameSection.style.display = "none";
     document.getElementById("feedbackSection").style.display = "block";
@@ -157,7 +156,7 @@ function sendFeedback(msg) {
     document.getElementById("feedbackSection").style.display = "none";
     const ty = document.getElementById("thankyou");
     ty.style.display = "block";
-    ty.innerHTML = `❤️ Thank you for your feedback!<br>You said: <b>${msg}</b>`;
+    ty.innerHTML = `❤️ Thank you for your feedback!<br><b>${msg}</b>`;
 }
 
 /* ===== FIREWORKS ===== */
