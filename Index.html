@@ -47,9 +47,10 @@ text-align:center;font-size:.9rem;opacity:.8}
 <h1 id="title" style="display:none;">🎊 HAPPY NEW YEAR 2026 🎊</h1>
 <div class="subtitle" id="typed"></div>
 
+<!-- NAME -->
 <div class="section" id="nameBox">
-<p>What should KA call you?</p>
-<input id="uname" placeholder="Your name (optional)"
+<p>What should KA call you? <b>*</b></p>
+<input id="uname" placeholder="Enter your name"
 style="padding:10px;border-radius:10px;border:none">
 <br><br>
 <button class="green" onclick="startQuestions()">Continue</button>
@@ -62,33 +63,37 @@ style="padding:10px;border-radius:10px;border:none">
 <span class="dot"></span>
 </div>
 
+<!-- Q1 -->
 <div class="section" id="q1">
 <p id="greet"></p>
-<button class="green" onclick="nextQ(1)">Good</button>
-<button class="blue" onclick="nextQ(1)">Fine</button>
-<button class="purple" onclick="nextQ(1)">Just like you</button>
-<button class="gray" onclick="nextQ(1)">Don't want to tell</button>
+<button class="green" onclick="saveQ1('Good')">Good</button>
+<button class="blue" onclick="saveQ1('Fine')">Fine</button>
+<button class="purple" onclick="saveQ1('Just like you')">Just like you</button>
+<button class="gray" onclick="saveQ1('Prefer not to say')">Don't want to tell</button>
 </div>
 
+<!-- Q2 -->
 <div class="section" id="q2">
 <p>🎮 Play a game with KA today?</p>
-<button class="green" onclick="nextQ(2)">YES</button>
-<button class="green" onclick="nextQ(2)">YES</button>
-<button class="orange" onclick="nextQ(2)">LET KA DECIDE</button>
+<button class="green" onclick="saveQ2('Yes')">YES</button>
+<button class="green" onclick="saveQ2('Yes')">YES</button>
+<button class="orange" onclick="saveQ2('Let KA decide')">LET KA DECIDE</button>
 </div>
 
+<!-- Q3 -->
 <div class="section" id="q3">
 <p>🌟 How you see yourself this year</p>
-<button class="blue" onclick="setMood(0.3)">Relaxed</button>
-<button class="red" onclick="setMood(1)">Stressful</button>
-<button class="purple" onclick="setMood(2)">Thriller</button>
+<button class="blue" onclick="saveQ3('Relaxed',0.3)">Relaxed</button>
+<button class="red" onclick="saveQ3('Stressful',1)">Stressful</button>
+<button class="purple" onclick="saveQ3('Thriller',2)">Thriller</button>
 </div>
 
+<!-- Q4 -->
 <div class="section" id="q4">
 <p>🎯 What is your New Year Resolution</p>
-<button class="green" onclick="finish()">I WILL TELL YOU ON CHAT</button>
-<button class="red" onclick="finish()">NONE OF YOUR BUSINESS</button>
-<button class="orange" onclick="finish()">I DIDN'T DECIDED YET</button>
+<button class="green" onclick="finish('Will share later')">I WILL TELL YOU ON CHAT</button>
+<button class="red" onclick="finish('Private')">NONE OF YOUR BUSINESS</button>
+<button class="orange" onclick="finish('Undecided')">I DIDN'T DECIDED YET</button>
 </div>
 
 <div class="section" id="result"></div>
@@ -98,18 +103,17 @@ style="padding:10px;border-radius:10px;border:none">
 <div class="madeby">Made by one and only <b>KA</b></div>
 
 <script>
-/* ⏱ TEST COUNTDOWN: 5 SECONDS */
+/* ⏱ TEST COUNTDOWN – 5 SECONDS */
 let target = Date.now() + 5000;
 let cd = document.getElementById("countdown");
 
+let userName="", A1="", A2="", A3="", A4="";
 let timer = setInterval(()=>{
 let diff = target - Date.now();
-if(diff <= 0){
+if(diff<=0){
 clearInterval(timer);
 showNewYear();
-}else{
-cd.innerHTML = Math.ceil(diff/1000);
-}
+}else cd.innerHTML=Math.ceil(diff/1000);
 },300);
 
 function showNewYear(){
@@ -120,65 +124,76 @@ confetti();
 nameBox.style.display="block";
 }
 
-function typeText(text){
+function typeText(t){
 let i=0;
-let el=document.getElementById("typed");
-el.innerHTML="";
-let t=setInterval(()=>{
-el.innerHTML += text[i++];
-if(i>=text.length) clearInterval(t);
+typed.innerHTML="";
+let iv=setInterval(()=>{
+typed.innerHTML+=t[i++];
+if(i>=t.length)clearInterval(iv);
 },80);
 }
 
 function startQuestions(){
+userName = uname.value.trim();
+if(!userName){
+alert("Please enter your name 🙂");
+return;
+}
 nameBox.style.display="none";
 q1.style.display="block";
 let h=new Date().getHours();
 let g=h<12?"Good Morning":h<18?"Good Evening":"Good Night";
-greet.innerHTML = g + (uname.value ? ", "+uname.value : "") + " 😊 How are you?";
+greet.innerHTML=`${g}, ${userName} 😊 How are you?`;
 activateDot(1);
 }
 
-function nextQ(n){
+function saveQ1(v){A1=v;goNext(1);}
+function saveQ2(v){A2=v;goNext(2);}
+function saveQ3(v,s){A3=v;speed=s;goNext(3);}
+
+function goNext(n){
 document.getElementById("q"+n).style.display="none";
 document.getElementById("q"+(n+1)).style.display="block";
 activateDot(n+1);
 }
 
-function setMood(s){
-speed=s;
-nextQ(3);
-}
-
-function finish(){
+function finish(v){
+A4=v;
 q4.style.display="none";
-result.style.display="block";
-result.innerHTML="<b>Response recorded ✅</b><br><br>📸 Take screenshot & send to KA";
 activateDot(4);
+result.style.display="block";
+result.innerHTML=`
+<b>Response recorded ✅</b><hr>
+<p>👤 <b>Name:</b> ${userName}</p>
+<p>🙂 <b>How you are:</b> ${A1}</p>
+<p>🎮 <b>Game with KA:</b> ${A2}</p>
+<p>🌟 <b>This year:</b> ${A3}</p>
+<p>🎯 <b>Resolution:</b> ${A4}</p>
+<p style="opacity:.7;">📸 Take screenshot & send to KA</p>`;
 }
 
+/* DOTS */
 function activateDot(n){
 document.querySelectorAll(".dot").forEach(d=>d.classList.remove("active"));
-if(n<5) document.querySelectorAll(".dot")[n-1].classList.add("active");
+if(n<=4)document.querySelectorAll(".dot")[n-1].classList.add("active");
 }
 
 /* 🎊 CONFETTI */
 let conf=[];
 function confetti(){
-for(let i=0;i<120;i++){
+for(let i=0;i<120;i++)
 conf.push({x:Math.random()*w,y:-10,dy:Math.random()*3+2});
-}
 }
 
 /* ⭐ BACKGROUND */
 const c=document.getElementById("bg"),ctx=c.getContext("2d");
-let w,h,speed=0.5;
+let w,h,speed=.5;
 function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
 resize();onresize=resize;
 
 let stars=[...Array(120)].map(()=>({x:Math.random()*w,y:Math.random()*h}));
 
-(function animate(){
+(function anim(){
 ctx.clearRect(0,0,w,h);
 ctx.fillStyle="white";
 stars.forEach(s=>{
@@ -189,7 +204,7 @@ conf.forEach(p=>{
 ctx.fillRect(p.x,p.y,3,3);
 p.y+=p.dy;
 });
-requestAnimationFrame(animate);
+requestAnimationFrame(anim);
 })();
 </script>
 
