@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Happy New Year 2026</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+*{box-sizing:border-box}
 body{
 margin:0;
 min-height:100vh;
@@ -13,24 +14,46 @@ background:radial-gradient(circle at top,#1a237e,#000);
 font-family:Arial,Helvetica,sans-serif;
 color:white;
 text-align:center;
+overflow:hidden;
+}
+
+.hidden{display:none}
+
+.center{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:100%;
 padding:20px;
 }
 
-.hidden{display:none;}
-
-.fade{
-animation:fade .6s ease forwards;
-}
-
+.fade{animation:fade .8s ease forwards}
 @keyframes fade{
 from{opacity:0;transform:translateY(20px)}
 to{opacity:1;transform:translateY(0)}
 }
 
 h1{
-font-size:2.2rem;
+font-size:2.4rem;
+margin:10px 0;
+color:white;
+text-shadow:0 0 20px #fff;
+animation:zoom 1.5s ease, glow 2s infinite alternate;
+}
+@keyframes zoom{from{transform:scale(.8)}to{transform:scale(1)}}
+@keyframes glow{from{text-shadow:0 0 10px #fff}to{text-shadow:0 0 25px #00e5ff}}
+
+.gold{
 color:gold;
-text-shadow:0 0 15px gold;
+font-size:1.3rem;
+font-weight:bold;
+margin-top:10px;
+animation:goldGlow 2s infinite alternate;
+}
+@keyframes goldGlow{
+from{text-shadow:0 0 10px gold}
+to{text-shadow:0 0 25px gold}
 }
 
 button{
@@ -49,119 +72,127 @@ button:active{transform:scale(.95)}
 input{
 padding:12px;
 font-size:16px;
-border-radius:10px;
+border-radius:12px;
 border:none;
 width:80%;
 max-width:260px;
 }
 
-.note{
-opacity:.75;
+.footer{
+position:fixed;
+bottom:10px;
+width:100%;
 font-size:.9rem;
-margin-top:20px;
+opacity:.8;
 }
 </style>
 </head>
 
 <body>
 
+<!-- COUNTDOWN -->
+<div id="countdownBox" class="center fade">
 <h2 id="countdown">Starting in 5</h2>
-
-<div id="newyear" class="hidden fade">
-<h1>🎊 HAPPY NEW YEAR 2026 🎊</h1>
-<p><b>This year should be memorable</b></p>
 </div>
 
-<div id="nameBox" class="hidden fade">
+<!-- NEW YEAR -->
+<div id="newyear" class="center hidden fade">
+<h1>HAPPY NEW YEAR 2026 🎊</h1>
+<div class="gold">This year should be memorable</div>
+<p id="greet"></p>
+</div>
+
+<!-- NAME -->
+<div id="nameBox" class="center hidden fade">
 <p>Enter your name (required)</p>
-<input id="username" placeholder="Your name">
+<input id="nameInput" placeholder="Your name">
 <br><br>
 <button onclick="saveName()">Continue</button>
 </div>
 
-<div id="q1" class="hidden fade">
+<!-- QUESTIONS -->
+<div id="q1" class="center hidden fade">
 <p>How are you?</p>
-<button onclick="next1('Good')">Good</button>
-<button onclick="next1('Fine')">Fine</button>
-<button onclick="next1('Just like you')">Just like you</button>
-<button onclick="next1('Prefer not to say')">Don't want to tell</button>
+<button onclick="a1('Good')">Good</button>
+<button onclick="a1('Fine')">Fine</button>
+<button onclick="a1('Just like you')">Just like you</button>
+<button onclick="a1('Prefer not to say')">Don't want to tell</button>
 </div>
 
-<div id="q2" class="hidden fade">
+<div id="q2" class="center hidden fade">
 <p>Play a game with KA today?</p>
-<button onclick="next2('Yes')">YES</button>
-<button onclick="next2('Yes')">YES</button>
-<button onclick="next2('Let KA decide')">LET KA DECIDE</button>
+<button onclick="a2('YES')">YES</button>
+<button onclick="a2('YES')">YES</button>
+<button onclick="a2('LET KA DECIDE')">LET KA DECIDE</button>
 </div>
 
-<div id="q3" class="hidden fade">
+<div id="q3" class="center hidden fade">
 <p>How do you see yourself this year?</p>
-<button onclick="next3('Relaxed')">Relaxed</button>
-<button onclick="next3('Stressful')">Stressful</button>
-<button onclick="next3('Thriller')">Thriller</button>
+<button onclick="a3('Relaxed')">Relaxed</button>
+<button onclick="a3('Stressful')">Stressful</button>
+<button onclick="a3('Thriller')">Thriller</button>
 </div>
 
-<div id="q4" class="hidden fade">
+<div id="q4" class="center hidden fade">
 <p>Your New Year Resolution?</p>
 <button onclick="finish('WORK ON MYSELF')">WORK ON MYSELF</button>
 <button onclick="finish('STAY CONSISTENT')">STAY CONSISTENT</button>
 <button onclick="finish('NOT DECIDED YET')">NOT DECIDED YET</button>
 </div>
 
-<div id="result" class="hidden fade"></div>
+<!-- RESULT -->
+<div id="result" class="center hidden fade"></div>
 
-<p class="note">Made by one and only <b>KA</b></p>
+<div class="footer">Made by one and only <b>KA</b></div>
 
 <script>
+/* Countdown */
 let t=5;
-let timer=setInterval(()=>{
+let cd=setInterval(()=>{
 document.getElementById("countdown").innerText="Starting in "+t;
 t--;
 if(t<0){
-clearInterval(timer);
-document.getElementById("countdown").classList.add("hidden");
-document.getElementById("newyear").classList.remove("hidden");
-document.getElementById("nameBox").classList.remove("hidden");
+clearInterval(cd);
+countdownBox.classList.add("hidden");
+newyear.classList.remove("hidden");
+setGreeting();
+setTimeout(()=>nameBox.classList.remove("hidden"),1200);
 }
 },1000);
 
-let NAME="",A1="",A2="",A3="",A4="";
+/* Greeting */
+function setGreeting(){
+let h=new Date().getHours();
+let g="Good Evening";
+if(h<12)g="Good Morning";
+else if(h>=18)g="Good Night";
+document.getElementById("greet").innerText=g+" ✨";
+}
+
+/* Data */
+let NAME="",R1="",R2="",R3="",R4="";
 
 function saveName(){
-let v=document.getElementById("username").value.trim();
-if(v===""){alert("Name is required");return;}
+let v=nameInput.value.trim();
+if(!v){alert("Name is required");return;}
 NAME=v;
-document.getElementById("nameBox").classList.add("hidden");
-document.getElementById("q1").classList.remove("hidden");
+nameBox.classList.add("hidden");
+q1.classList.remove("hidden");
 }
-
-function next1(v){
-A1=v;
-q1.classList.add("hidden");
-q2.classList.remove("hidden");
-}
-function next2(v){
-A2=v;
-q2.classList.add("hidden");
-q3.classList.remove("hidden");
-}
-function next3(v){
-A3=v;
-q3.classList.add("hidden");
-q4.classList.remove("hidden");
-}
+function a1(v){R1=v;q1.classList.add("hidden");q2.classList.remove("hidden");}
+function a2(v){R2=v;q2.classList.add("hidden");q3.classList.remove("hidden");}
+function a3(v){R3=v;q3.classList.add("hidden");q4.classList.remove("hidden");}
 function finish(v){
-A4=v;
+R4=v;
 q4.classList.add("hidden");
-let r=document.getElementById("result");
-r.classList.remove("hidden");
-r.innerHTML=`
-<h3>Response Recorded ✅</h3>
+result.classList.remove("hidden");
+result.innerHTML=`
+<h2>Response Recorded ✅</h2>
 <p><b>Name:</b> ${NAME}</p>
-<p><b>How you are:</b> ${A1}</p>
-<p><b>Game with KA:</b> ${A2}</p>
-<p><b>This year:</b> ${A3}</p>
-<p><b>Resolution:</b> ${A4}</p>
+<p><b>How you are:</b> ${R1}</p>
+<p><b>Game with KA:</b> ${R2}</p>
+<p><b>This year:</b> ${R3}</p>
+<p><b>Resolution:</b> ${R4}</p>
 <p>📸 Take screenshot & send to KA</p>
 `;
 }
