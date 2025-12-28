@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year 2026 🎆</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: black;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.center {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 5;
+    padding: 0 15px;
+}
+
+h1 {
+    font-size: 2.4rem;
+    margin-bottom: 10px;
+    animation: glow 2s infinite alternate;
+}
+
+#countdown {
+    font-size: 1.4rem;
+    margin: 12px 0;
+}
+
+.section {
+    margin-top: 20px;
+    display: none;
+}
+
+button {
+    padding: 12px 20px;
+    margin: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.yes { background: #00e676; }
+.no  { background: #ff5252; }
+
+.feedback button {
+    background: #2979ff;
+}
+
+.madeby {
+    position: fixed;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px #fff; }
+    to   { text-shadow: 0 0 30px #00ffff; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="center">
+    <h1>🎉 Happy New Year 2026 🎆</h1>
+    <div id="countdown">Loading countdown...</div>
+
+    <!-- Game Question -->
+    <div class="section" id="gameSection">
+        <p>Do you want to play any game?</p>
+        <p>🏸 Badminton or 🎮 Life Game?</p>
+        <button class="yes" onclick="chooseGame(true)">YES</button>
+        <button class="no" onclick="chooseGame(false)">NO</button>
+    </div>
+
+    <!-- Feedback -->
+    <div class="section feedback" id="feedbackSection">
+        <p>How was this New Year surprise? ✨</p>
+        <button onclick="sendFeedback('Amazing 😍')">😍 Amazing</button>
+        <button onclick="sendFeedback('Good 🙂')">🙂 Good</button>
+        <button onclick="sendFeedback('Okay 😐')">😐 Okay</button>
+    </div>
+
+    <div class="section" id="thankyou"></div>
+</div>
+
+<div class="madeby">
+    Made by one and only <b>YOUR NAME</b>
+</div>
+
+<script>
+/* ===== COUNTDOWN (IST) ===== */
+const targetIST = new Date("2026-01-01T00:00:00+05:30").getTime();
+const cd = document.getElementById("countdown");
+const gameSection = document.getElementById("gameSection");
+
+setInterval(() => {
+    const now = new Date().getTime();
+    const diff = targetIST - now;
+
+    if (diff <= 0) {
+        cd.innerHTML = "🎆 Welcome 2026! 🎉";
+        gameSection.style.display = "block";
+        return;
+    }
+
+    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+    cd.innerHTML = `${d}d ${h}h ${m}m ${s}s (IST)`;
+}, 1000);
+
+/* ===== GAME LOGIC ===== */
+function chooseGame(yes) {
+    gameSection.style.display = "none";
+    document.getElementById("feedbackSection").style.display = "block";
+}
+
+/* ===== FEEDBACK ===== */
+function sendFeedback(msg) {
+    document.getElementById("feedbackSection").style.display = "none";
+    document.getElementById("thankyou").style.display = "block";
+    document.getElementById("thankyou").innerHTML =
+        `❤️ Thank you for your feedback! <br><br> You said: <b>${msg}</b>`;
+}
+
+/* ===== FULLSCREEN FIREWORKS ===== */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
+
+class Firework {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height / 2;
+        this.particles = [];
+        for (let i = 0; i < 70; i++) {
+            this.particles.push({
+                x: this.x,
+                y: this.y,
+                angle: Math.random() * 2 * Math.PI,
+                speed: Math.random() * 5 + 2,
+                life: 60
+            });
+        }
+    }
+    draw() {
+        this.particles.forEach(p => {
+            ctx.fillStyle = `hsl(${Math.random()*360},100%,60%)`;
+            ctx.fillRect(p.x, p.y, 2, 2);
+            p.x += Math.cos(p.angle) * p.speed;
+            p.y += Math.sin(p.angle) * p.speed;
+            p.life--;
+        });
+        this.particles = this.particles.filter(p => p.life > 0);
+    }
+}
+
+let fireworks = [];
+setInterval(() => fireworks.push(new Firework()), 600);
+
+function animate() {
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    fireworks.forEach(f => f.draw());
+    fireworks = fireworks.filter(f => f.particles.length);
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
