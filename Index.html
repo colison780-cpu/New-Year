@@ -6,151 +6,120 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: linear-gradient(135deg, #020024, #090979, #00d4ff);
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-    color: white;
+html,body{
+    margin:0;
+    padding:0;
+    height:100%;
+    background:linear-gradient(135deg,#020024,#090979,#00d4ff);
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    color:white;
 }
-
-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
+canvas{position:fixed;top:0;left:0}
+.center{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    width:100%;
+    text-align:center;
+    padding:15px;
+    z-index:5;
 }
-
-.center {
-    position: absolute;
-    width: 100%;
-    text-align: center;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 5;
-    padding: 0 15px;
+h1{font-size:2.3rem;animation:glow 2s infinite alternate}
+.subtitle{
+    color:gold;
+    font-weight:bold;
+    font-size:1.2rem;
+    animation:goldGlow 2s infinite alternate;
 }
-
-h1 {
-    font-size: 2.3rem;
-    margin-bottom: 5px;
-    animation: glow 2s infinite alternate;
+#countdown{font-size:1.6rem;margin-top:10px}
+.section{display:none;margin-top:20px;animation:fadeUp .7s ease}
+button{
+    padding:12px 22px;
+    margin:8px;
+    border:none;
+    border-radius:30px;
+    font-size:1rem;
+    cursor:pointer;
 }
-
-.subtitle {
-    font-size: 1.2rem;
-    color: gold;
-    font-weight: bold;
-    animation: goldGlow 2s infinite alternate;
+.green{background:#00e676}
+.orange{background:#ff9100}
+.red{background:#ff5252}
+.blue{background:#00b0ff}
+.purple{background:#aa00ff}
+.gray{background:#9e9e9e}
+.whatsapp{
+    background:#25D366;
+    color:white;
+    font-weight:bold;
 }
-
-#countdown {
-    font-size: 1.6rem;
-    margin-top: 10px;
+.madeby{
+    position:fixed;
+    bottom:10px;
+    width:100%;
+    text-align:center;
+    opacity:.85;
+    font-size:.9rem;
 }
-
-.section {
-    display: none;
-    margin-top: 20px;
-    animation: fadeUp 0.8s ease forwards;
+@keyframes glow{
+    from{text-shadow:0 0 10px white}
+    to{text-shadow:0 0 30px cyan}
 }
-
-button {
-    padding: 12px 22px;
-    margin: 8px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
+@keyframes goldGlow{
+    from{text-shadow:0 0 10px gold}
+    to{text-shadow:0 0 25px goldenrod}
 }
-
-.green { background: #00e676; }
-.orange { background: #ff9100; }
-.red { background: #ff5252; }
-.blue { background: #00b0ff; }
-.purple { background: #aa00ff; }
-.gray { background: #9e9e9e; }
-
-.madeby {
-    position: fixed;
-    bottom: 10px;
-    width: 100%;
-    text-align: center;
-    font-size: 0.9rem;
-    opacity: 0.85;
-}
-
-.tap {
-    font-size: 0.9rem;
-    opacity: 0.75;
-    margin-top: 10px;
-}
-
-@keyframes glow {
-    from { text-shadow: 0 0 10px white; }
-    to { text-shadow: 0 0 30px cyan; }
-}
-
-@keyframes goldGlow {
-    from { text-shadow: 0 0 10px gold; }
-    to { text-shadow: 0 0 25px goldenrod; }
-}
-
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes fadeUp{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
 }
 </style>
 </head>
 
 <body>
 
-<audio id="music" loop>
-    <source src="https://cdn.pixabay.com/audio/2022/10/20/audio_946b6fa1d5.mp3" type="audio/mpeg">
-</audio>
-
 <canvas id="bg"></canvas>
 
 <div class="center">
 
 <h1 id="title" style="display:none;">🎊 HAPPY NEW YEAR 2026 🎊</h1>
-<div class="subtitle" id="subtitle" style="display:none;">This year should be memorable</div>
+<div class="subtitle" id="subtitle" style="display:none;">
+This year should be memorable
+</div>
 
 <div id="countdown">Starting...</div>
-<div class="tap" id="tap" style="display:none;">Tap anywhere to start music 🔊</div>
 
 <!-- Q1 -->
 <div class="section" id="q1">
 <p>🙂 How are you?</p>
-<button class="green" onclick="q1a('Good')">Good</button>
-<button class="blue" onclick="q1a('Fine')">Fine</button>
-<button class="purple" onclick="q1a('Just like you')">Just like you</button>
-<button class="gray" onclick="q1a('Prefer not to say')">Don't want to tell</button>
+<button class="green" onclick="nextQ('Good')">Good</button>
+<button class="blue" onclick="nextQ('Fine')">Fine</button>
+<button class="purple" onclick="nextQ('Just like you')">Just like you</button>
+<button class="gray" onclick="nextQ('Prefer not to say')">Don't want to tell</button>
 </div>
 
 <!-- Q2 -->
 <div class="section" id="q2">
 <p>🎮 play a game with KA today?</p>
-<button class="green" onclick="q2a('Yes')">YES</button>
-<button class="green" onclick="q2a('Yes')">YES</button>
-<button class="orange" onclick="q2a('Let KA decide')">LET KA DECIDE FOR YOU</button>
+<button class="green" onclick="nextQ2('Yes')">YES</button>
+<button class="green" onclick="nextQ2('Yes')">YES</button>
+<button class="orange" onclick="nextQ2('Let KA decide')">LET KA DECIDE FOR YOU</button>
 </div>
 
 <!-- Q3 -->
 <div class="section" id="q3">
 <p>🌟 How you see yourself this year</p>
-<button class="blue" onclick="q3a('Relaxed')">Relaxed</button>
-<button class="red" onclick="q3a('Stressful')">Stressful</button>
-<button class="purple" onclick="q3a('Thriller')">Thriller</button>
+<button class="blue" onclick="nextQ3('Relaxed')">Relaxed</button>
+<button class="red" onclick="nextQ3('Stressful')">Stressful</button>
+<button class="purple" onclick="nextQ3('Thriller')">Thriller</button>
 </div>
 
 <!-- Q4 -->
 <div class="section" id="q4">
 <p>🎯 What is your New Year Resolution</p>
-<button class="green" onclick="q4a('Will share later')">I WILL TELL YOU ON CHAT</button>
-<button class="red" onclick="q4a('Private')">NONE OF YOUR BUSINESS</button>
-<button class="orange" onclick="q4a('Still figuring it out')">I DIDN'T DECIDED YET</button>
+<button class="green" onclick="finish('Will share later')">I WILL TELL YOU ON CHAT</button>
+<button class="red" onclick="finish('Private')">NONE OF YOUR BUSINESS</button>
+<button class="orange" onclick="finish('Still figuring it out')">I DIDN'T DECIDED YET</button>
 </div>
 
 <!-- RESULT -->
@@ -161,33 +130,42 @@ button {
 <div class="madeby">Made by one and only <b>Rakesh</b></div>
 
 <script>
-const target = Date.now() + 10000;
-const cd = document.getElementById("countdown");
-const music = document.getElementById("music");
-const tap = document.getElementById("tap");
+/* ===== COUNTDOWN (10 sec demo) ===== */
+const target = Date.now()+10000;
+const cd=document.getElementById("countdown");
 
-let started=false, A0="", A1="", A2="", A3="";
+let A0="",A1="",A2="",A3="",started=false;
 
 setInterval(()=>{
-    const d = target - Date.now();
+    const d=target-Date.now();
     if(d<=0 && !started){
         started=true;
         cd.style.display="none";
         title.style.display="block";
         subtitle.style.display="block";
         q1.style.display="block";
-        tap.style.display="block";
-    } else if(!started){
-        cd.innerHTML = `Starting in ${Math.ceil(d/1000)} seconds...`;
+    }else if(!started){
+        cd.innerHTML=`Starting in ${Math.ceil(d/1000)} seconds...`;
     }
 },1000);
 
-document.body.onclick=()=> music.play().catch(()=>{});
-
-function q1a(v){A0=v; q1.style.display="none"; q2.style.display="block";}
-function q2a(v){A1=v; q2.style.display="none"; q3.style.display="block";}
-function q3a(v){A2=v; q3.style.display="none"; q4.style.display="block";}
-function q4a(v){
+/* ===== FLOW ===== */
+function nextQ(v){
+    A0=v;
+    q1.style.display="none";
+    q2.style.display="block";
+}
+function nextQ2(v){
+    A1=v;
+    q2.style.display="none";
+    q3.style.display="block";
+}
+function nextQ3(v){
+    A2=v;
+    q3.style.display="none";
+    q4.style.display="block";
+}
+function finish(v){
     A3=v;
     q4.style.display="none";
     result.style.display="block";
@@ -198,10 +176,17 @@ function q4a(v){
     <p>🎮 <b>Game with KA:</b> ${A1}</p>
     <p>🌟 <b>This year:</b> ${A2}</p>
     <p>🎯 <b>Resolution:</b> ${A3}</p>
-    <p style="opacity:.7;">📸 Take a screenshot and send to KA</p>`;
+    <br>
+    <button class="whatsapp"
+    onclick="window.location.href='https://wa.me/91XXXXXXXXXX'">
+    YES – OPEN WHATSAPP
+    </button>
+    <p style="opacity:.7;margin-top:8px;">
+    📸 Take screenshot and send to KA
+    </p>`;
 }
 
-/* background animation */
+/* ===== BACKGROUND ===== */
 const c=document.getElementById("bg"),x=c.getContext("2d");
 function r(){c.width=innerWidth;c.height=innerHeight}r();onresize=r;
 let s=[...Array(120)].map(()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*2+1,dx:.4,dy:.4}));
