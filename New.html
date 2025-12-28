@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+margin:0;
+min-height:100vh;
+background:radial-gradient(circle at top,#1a237e,#000);
+font-family:Arial,Helvetica,sans-serif;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:20px;
+}
+
+.box{
+width:100%;
+max-width:420px;
+animation:fade .6s ease;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+h1{
+font-size:2.2rem;
+text-shadow:0 0 25px #fff;
+}
+
+.gold{
+color:gold;
+font-weight:bold;
+font-size:1.3rem;
+text-shadow:0 0 20px gold;
+}
+
+button{
+padding:12px 20px;
+margin:8px;
+border:none;
+border-radius:25px;
+font-size:16px;
+background:#00b0ff;
+color:white;
+width:90%;
+max-width:280px;
+}
+
+input{
+padding:12px;
+border-radius:12px;
+border:none;
+font-size:16px;
+width:90%;
+max-width:280px;
+}
+
+.footer{
+position:fixed;
+bottom:10px;
+width:100%;
+text-align:center;
+opacity:.8;
+font-size:.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app" class="box"></div>
+
+<div class="footer">Made by one and only <b>KA</b></div>
+
+<script>
+const app = document.getElementById("app");
+let data = {};
+
+function greeting(){
+let h=new Date().getHours();
+if(h<12) return "Good Morning";
+if(h<18) return "Good Evening";
+return "Good Night";
+}
+
+/* STEP 1 – COUNTDOWN */
+let t=5;
+function countdown(){
+app.innerHTML = `<h2>Starting in ${t}</h2>`;
+t--;
+if(t>=0) setTimeout(countdown,1000);
+else newYear();
+}
+countdown();
+
+/* STEP 2 – NEW YEAR */
+function newYear(){
+app.innerHTML = `
+<h1>HAPPY NEW YEAR 2026 🎊</h1>
+<div class="gold">This year should be memorable</div>
+<p>${greeting()} ✨</p>
+`;
+setTimeout(nameStep,2000);
+}
+
+/* STEP 3 – NAME */
+function nameStep(){
+app.innerHTML = `
+<p>Enter your name (required)</p>
+<input id="name">
+<br><br>
+<button onclick="saveName()">Continue</button>
+`;
+}
+
+function saveName(){
+let v=document.getElementById("name").value.trim();
+if(!v){alert("Name is required");return;}
+data.name=v;
+q1();
+}
+
+/* QUESTIONS */
+function q1(){
+app.innerHTML=`
+<p>How are you?</p>
+<button onclick="a('mood','Good')">Good</button>
+<button onclick="a('mood','Fine')">Fine</button>
+<button onclick="a('mood','Just like you')">Just like you</button>
+<button onclick="a('mood','Prefer not to say')">Don't want to tell</button>
+`;
+}
+
+function q2(){
+app.innerHTML=`
+<p>Play a game with KA today?</p>
+<button onclick="a('game','YES')">YES</button>
+<button onclick="a('game','YES')">YES</button>
+<button onclick="a('game','LET KA DECIDE')">LET KA DECIDE</button>
+`;
+}
+
+function q3(){
+app.innerHTML=`
+<p>How do you see yourself this year?</p>
+<button onclick="a('year','Relaxed')">Relaxed</button>
+<button onclick="a('year','Stressful')">Stressful</button>
+<button onclick="a('year','Thriller')">Thriller</button>
+`;
+}
+
+function q4(){
+app.innerHTML=`
+<p>Your New Year Resolution?</p>
+<button onclick="finish('ACHIEVE MY GOALS')">ACHIEVE MY GOALS</button>
+<button onclick="finish('IMPROVE MYSELF')">IMPROVE MYSELF</button>
+<button onclick="finish('GO WITH THE FLOW')">GO WITH THE FLOW</button>
+`;
+}
+
+function a(key,val){
+data[key]=val;
+if(key==="mood") q2();
+else if(key==="game") q3();
+else if(key==="year") q4();
+}
+
+/* RESULT */
+function finish(res){
+data.resolution=res;
+app.innerHTML=`
+<h2>Response Recorded ✅</h2>
+<p><b>Name:</b> ${data.name}</p>
+<p><b>Mood:</b> ${data.mood}</p>
+<p><b>Game with KA:</b> ${data.game}</p>
+<p><b>This year:</b> ${data.year}</p>
+<p><b>Resolution:</b> ${data.resolution}</p>
+<p>📸 Take screenshot & send to KA</p>
+`;
+}
+</script>
+
+</body>
+</html>
