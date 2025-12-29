@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Card Game – 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:linear-gradient(180deg,#050014,#120033);
+  font-family:Arial;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.container{
+  text-align:center;
+  width:100%;
+  max-width:360px;
+  padding:20px;
+}
+
+h1{
+  color:gold;
+  text-shadow:0 0 15px gold;
+}
+
+.card{
+  width:140px;
+  height:200px;
+  margin:25px auto;
+  background:linear-gradient(135deg,#1a1a1a,#333);
+  border-radius:15px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:64px;
+  font-weight:bold;
+  box-shadow:0 0 25px rgba(255,255,255,.2);
+  transform-style:preserve-3d;
+  transition:transform 0.8s;
+}
+
+.card.flip{
+  transform:rotateY(180deg);
+}
+
+.card span{
+  transform:rotateY(180deg);
+}
+
+button{
+  padding:12px 26px;
+  border:none;
+  border-radius:25px;
+  font-size:16px;
+  background:linear-gradient(45deg,#ff9800,#ff5722);
+  color:white;
+  cursor:pointer;
+}
+
+.result{
+  margin-top:18px;
+  font-size:18px;
+  color:#ffd966;
+}
+
+footer{
+  position:fixed;
+  bottom:10px;
+  width:100%;
+  text-align:center;
+  font-size:13px;
+  opacity:.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Draw a Card</h1>
+
+  <div id="card" class="card">?</div>
+
+  <button onclick="drawCard()">Draw Card</button>
+
+  <div id="result" class="result"></div>
+</div>
+
+<footer>Made by one and only <b>KA</b></footer>
+
+<script>
+function drawCard(){
+  const card = document.getElementById("card");
+  const result = document.getElementById("result");
+
+  card.classList.remove("flip");
+  card.innerHTML="?";
+  result.innerHTML="";
+
+  setTimeout(()=>{
+    card.classList.add("flip");
+
+    let chance = Math.random();
+    let symbol, text="";
+
+    /* 🎯 60% KING RULE */
+    if(chance < 0.6){
+      symbol = "K";
+      text = "KA";
+    }else{
+      const others = ["A","Q","J"];
+      symbol = others[Math.floor(Math.random()*others.length)];
+    }
+
+    setTimeout(()=>{
+      card.innerHTML = `<span>${symbol}</span>`;
+      if(symbol === "K"){
+        result.innerHTML = `King drawn → <b>${text}</b>`;
+      }else{
+        result.innerHTML = `Card drawn → ${symbol}`;
+      }
+    },400);
+
+  },200);
+}
+</script>
+
+</body>
+</html>
