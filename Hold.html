@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hold'em with KA ♠</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+margin:0;
+background:radial-gradient(circle at top,#0b3d2e,#02150f);
+font-family:Arial;
+color:white;
+text-align:center;
+overflow:hidden;
+}
+h1{margin-top:20px}
+.table{
+margin:auto;
+margin-top:20px;
+width:95%;
+max-width:500px;
+background:#0f5132;
+border-radius:50%;
+padding:20px;
+box-shadow:0 0 30px #000 inset;
+}
+.cards{margin:10px}
+.card{
+display:inline-block;
+width:55px;
+height:75px;
+background:white;
+color:black;
+border-radius:8px;
+margin:4px;
+line-height:75px;
+font-size:1.4rem;
+font-weight:bold;
+}
+.community{margin-top:15px}
+button{
+margin-top:20px;
+padding:12px 25px;
+border:none;
+border-radius:30px;
+font-size:1rem;
+background:#ffd700;
+cursor:pointer;
+}
+.result{
+margin-top:15px;
+font-size:1.1rem;
+font-weight:bold;
+}
+.footer{
+position:fixed;
+bottom:10px;
+width:100%;
+opacity:.7;
+font-size:.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<h1>♠ Texas Hold'em with KA ♣</h1>
+
+<div class="table">
+
+<h3>You</h3>
+<div class="cards" id="player"></div>
+
+<h3>KA</h3>
+<div class="cards" id="ka"></div>
+
+<h3>Community</h3>
+<div class="cards community" id="board"></div>
+
+<button onclick="deal()">Deal Cards</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<div class="footer">Made by one and only <b>KA</b></div>
+
+<script>
+const suits=["♠","♥","♦","♣"];
+const values=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+let deck=[];
+
+function buildDeck(){
+deck=[];
+for(let s of suits)
+for(let v of values)
+deck.push({v,s});
+deck.sort(()=>Math.random()-0.5);
+}
+
+function draw(n){
+return deck.splice(0,n);
+}
+
+function show(el,cards){
+el.innerHTML="";
+cards.forEach(c=>{
+let d=document.createElement("div");
+d.className="card";
+d.innerHTML=c.v+c.s;
+if(c.s==="♥"||c.s==="♦")d.style.color="red";
+el.appendChild(d);
+});
+}
+
+function rank(cards){
+let vals=cards.map(c=>c.v);
+let counts={};
+vals.forEach(v=>counts[v]=(counts[v]||0)+1);
+let pairs=Object.values(counts).filter(c=>c===2).length;
+if(Object.values(counts).includes(3))return 4;
+if(pairs===2)return 3;
+if(pairs===1)return 2;
+return 1;
+}
+
+function deal(){
+buildDeck();
+
+let player=draw(2);
+let ka=draw(2);
+let board=draw(5);
+
+show(document.getElementById("player"),player);
+show(document.getElementById("ka"),ka);
+show(document.getElementById("board"),board);
+
+let pRank=rank(player.concat(board));
+let kRank=rank(ka.concat(board));
+
+let text="";
+if(pRank>kRank) text="🎉 You Win!";
+else if(kRank>pRank) text="♚ KA Wins!";
+else text="🤝 It's a Tie!";
+
+document.getElementById("result").innerHTML=text;
+}
+</script>
+
+</body>
+</html>
