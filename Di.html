@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fake WhatsApp Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{
+  margin:0;
+  background:#ece5dd;
+}
+.app{
+  max-width:420px;
+  height:100vh;
+  margin:auto;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+}
+
+/* HEADER */
+.header{
+  background:#075e54;
+  color:#fff;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.header span{
+  font-weight:bold;
+}
+.header .icons span{
+  margin-left:12px;
+  cursor:pointer;
+}
+
+/* TABS */
+.tabs{
+  display:flex;
+  background:#075e54;
+  color:#d5f5ee;
+}
+.tabs div{
+  flex:1;
+  text-align:center;
+  padding:8px;
+  font-size:14px;
+}
+
+/* CHAT LIST */
+.chatlist{
+  flex:1;
+  overflow:auto;
+}
+.chat{
+  display:flex;
+  padding:10px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+}
+.chat img{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  margin-right:10px;
+}
+.chat .name{
+  font-weight:bold;
+}
+
+/* CHAT SCREEN */
+.chatScreen{
+  display:none;
+  flex:1;
+  flex-direction:column;
+  background:url("https://i.imgur.com/8fK4h6K.png");
+}
+.chatHeader{
+  background:#075e54;
+  color:#fff;
+  padding:10px;
+  display:flex;
+  align-items:center;
+}
+.chatHeader span{
+  margin-right:10px;
+  cursor:pointer;
+}
+.messages{
+  flex:1;
+  padding:10px;
+  overflow:auto;
+}
+.msg{
+  max-width:75%;
+  padding:8px 10px;
+  border-radius:8px;
+  margin-bottom:8px;
+  font-size:14px;
+}
+.me{
+  background:#dcf8c6;
+  margin-left:auto;
+}
+.other{
+  background:#fff;
+}
+.time{
+  font-size:10px;
+  text-align:right;
+  opacity:0.6;
+}
+.typing{
+  font-size:12px;
+  padding:5px 10px;
+  opacity:0.6;
+}
+
+/* INPUT */
+.inputBox{
+  display:flex;
+  padding:8px;
+  background:#f0f0f0;
+}
+.inputBox input{
+  flex:1;
+  padding:8px;
+  border-radius:20px;
+  border:none;
+  outline:none;
+}
+.inputBox button{
+  margin-left:8px;
+  padding:8px 12px;
+  border:none;
+  border-radius:50%;
+  background:#075e54;
+  color:#fff;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<!-- MAIN HEADER -->
+<div class="header">
+  <span>WhatsApp</span>
+  <div class="icons">
+    <span>📷</span>
+    <span>🔍</span>
+    <span>⋮</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div>Status</div>
+  <div>Chats</div>
+  <div>Calls</div>
+</div>
+
+<!-- CHAT LIST -->
+<div class="chatlist" id="chatList">
+  <div class="chat" onclick="openChat('KA','boy')">
+    <img src="https://i.imgur.com/4Z7bZ1y.png">
+    <div>
+      <div class="name">KA</div>
+      <div>Online</div>
+    </div>
+  </div>
+
+  <div class="chat" onclick="openChat('Gauri','girl')">
+    <img src="https://i.imgur.com/9z6xKkS.png">
+    <div>
+      <div class="name">Gauri</div>
+      <div>Last seen recently</div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT SCREEN -->
+<div class="chatScreen" id="chatScreen">
+  <div class="chatHeader">
+    <span onclick="goBack()">⬅</span>
+    <strong id="chatTitle"></strong>
+  </div>
+
+  <div class="messages" id="messages"></div>
+  <div class="typing" id="typing" style="display:none">typing...</div>
+
+  <div class="inputBox">
+    <input id="msgInput" placeholder="Type a message">
+    <button onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+let currentUser="";
+let gender="";
+
+function openChat(name,gen){
+  currentUser=name;
+  gender=gen;
+  document.getElementById("chatTitle").innerText=name;
+  document.getElementById("chatList").style.display="none";
+  document.getElementById("chatScreen").style.display="flex";
+  document.getElementById("messages").innerHTML="";
+}
+
+function goBack(){
+  document.getElementById("chatScreen").style.display="none";
+  document.getElementById("chatList").style.display="block";
+}
+
+function sendMsg(){
+  let input=document.getElementById("msgInput");
+  let text=input.value.trim();
+  if(!text) return;
+  addMsg(text,"me");
+  input.value="";
+  document.getElementById("typing").style.display="block";
+  setTimeout(()=>{
+    document.getElementById("typing").style.display="none";
+    addMsg(reply(text),"other");
+  },900);
+}
+
+function reply(msg){
+  let m=msg.toLowerCase();
+
+  if(/hi|hello|hey/.test(m)){
+    return gender==="boy" ? "khelegi?" : "khelega?";
+  }
+
+  if(/how are you|kya haal/.test(m))
+    return "theek hoon, tum batao";
+
+  if(/i'?m good|good/.test(m))
+    return "nice 👍";
+
+  if(/yes|haan/.test(m))
+    return "ok";
+
+  if(/acha/.test(m))
+    return gender==="girl" ? "samjhi" : "samjha";
+
+  if(/what.*doing|kya kar/.test(m))
+    return ["nothing","busy hoon","hamesha busy"].sort(()=>0.5-Math.random())[0];
+
+  if(/kitne baje|kab/.test(m))
+    return "tum decide karo";
+
+  if(/😂|lol/.test(m))
+    return "😂";
+
+  if(/dead/.test(m))
+    return "are you idiot?";
+
+  if(/i am king/.test(m) && currentUser==="Gauri")
+    return "aap to mahan hai king KA 👑";
+
+  if(/who are you/.test(m) && currentUser==="KA")
+    return "I am a king 👑";
+
+  return "haan";
+}
+
+function addMsg(text,type){
+  let div=document.createElement("div");
+  div.className="msg "+type;
+  div.innerHTML=text+`<div class="time">${new Date().toLocaleTimeString([],{
+    hour:'2-digit',minute:'2-digit'
+  })}</div>`;
+  let box=document.getElementById("messages");
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+</script>
+</body>
+</html>
