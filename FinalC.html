@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KA Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family: system-ui, -apple-system;
+  background:#ece5dd;
+}
+.app{
+  max-width:420px;
+  height:100vh;
+  margin:auto;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+}
+.header{
+  background:#075e54;
+  color:white;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.header span{font-weight:bold}
+.header button{
+  background:none;border:none;color:white;font-size:16px;cursor:pointer
+}
+.chat{
+  flex:1;
+  background:url("https://i.imgur.com/3ZQ3Z5G.jpg");
+  padding:10px;
+  overflow-y:auto;
+}
+.msg{
+  max-width:75%;
+  margin:6px 0;
+  padding:8px 10px;
+  border-radius:8px;
+  font-size:14px;
+  position:relative;
+}
+.me{
+  background:#dcf8c6;
+  margin-left:auto;
+}
+.other{
+  background:white;
+}
+.time{
+  font-size:10px;
+  color:#555;
+  text-align:right;
+}
+.ticks{
+  font-size:12px;
+  margin-left:4px;
+}
+.blue{color:#34b7f1}
+.input{
+  display:flex;
+  padding:8px;
+  background:#f0f0f0;
+}
+.input input{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:none;
+}
+.input button{
+  margin-left:8px;
+  padding:10px 14px;
+  border:none;
+  border-radius:50%;
+  background:#075e54;
+  color:white;
+}
+.typing{
+  font-size:12px;
+  color:#555;
+  margin:4px;
+}
+.select{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:6px;
+}
+.select button{
+  padding:6px 12px;
+  border-radius:20px;
+  border:none;
+  cursor:pointer;
+}
+.activeChat{background:#075e54;color:white}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<div class="select">
+  <button onclick="setUser('KA')" id="btnKA" class="activeChat">KA</button>
+  <button onclick="setUser('Gauri')" id="btnGauri">Gauri</button>
+</div>
+
+<div class="header">
+  <span id="chatName">KA</span>
+  <div>
+    <button onclick="alert('Calling…')">📞</button>
+    <button onclick="alert('Status opened')">📸</button>
+  </div>
+</div>
+
+<div class="chat" id="chat"></div>
+<div class="typing" id="typing" style="display:none">typing…</div>
+
+<div class="input">
+  <input id="msg" placeholder="Type message">
+  <button onclick="send()">➤</button>
+</div>
+
+</div>
+
+<script>
+let current="KA";
+let mood="neutral";
+
+function setUser(u){
+  current=u;
+  chat.innerHTML="";
+  chatName.innerText=u;
+  btnKA.classList.remove("activeChat");
+  btnGauri.classList.remove("activeChat");
+  document.getElementById("btn"+u).classList.add("activeChat");
+}
+
+function send(){
+  let t=msg.value.trim();
+  if(!t) return;
+  msg.value="";
+  addMsg(t,"me","✔");
+
+  setTimeout(()=>markDelivered(),300);
+  typing.style.display="block";
+
+  setTimeout(()=>{
+    typing.style.display="none";
+    let reply=replyLogic(t);
+    addMsg(reply,"other","");
+    markSeen();
+  },1000);
+}
+
+function addMsg(text,type,tick){
+  let d=document.createElement("div");
+  d.className="msg "+type;
+  d.innerHTML=text+
+    `<div class="time">
+      ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
+      ${tick?`<span class="ticks">${tick}</span>`:""}
+    </div>`;
+  chat.appendChild(d);
+  chat.scrollTop=chat.scrollHeight;
+}
+
+function markDelivered(){
+  document.querySelectorAll(".ticks").forEach(t=>t.innerText="✔✔");
+}
+function markSeen(){
+  document.querySelectorAll(".ticks").forEach(t=>{
+    t.innerText="✔✔";
+    t.classList.add("blue");
+  });
+}
+
+function replyLogic(m){
+  m=m.toLowerCase();
+
+  if(/dead|idiot|pagal/.test(m)){
+    mood="angry";
+    return "are you idiot?";
+  }
+
+  if(/😂|lol|haha/.test(m)) return "😂";
+
+  if(/hi|hello|hey/.test(m))
+    return current==="Gauri"?"khelega":"khelegi";
+
+  if(/how|haal|kaisa/.test(m))
+    return current==="Gauri"?"theek hoon tu bta":"theek hoon tum batao";
+
+  if(/what.*doing|kya kar/.test(m))
+    return current==="Gauri"?
+      "busy hoon":"phone chala rha hoon";
+
+  if(/marks|result/.test(m))
+    return "theek hi aaye";
+
+  if(/kitne baje|kab/.test(m))
+    return "tu decide kar";
+
+  if(/acha/.test(m))
+    return current==="Gauri"?"samjhi":"samjha";
+
+  if(/yes|haan/.test(m))
+    return "ok";
+
+  if(/i am king/.test(m) && current==="Gauri")
+    return "aap to mahan hai king KA";
+
+  if(/who are you/.test(m) && current==="KA")
+    return "i am a king";
+
+  if(mood==="angry"){
+    mood="neutral";
+    return "bas kar";
+  }
+
+  return current==="Gauri"?"hmm":"theek hai";
+}
+</script>
+</body>
+</html>
