@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KA WhatsApp</title>
+
+<style>
+body{margin:0;background:#0b141a;font-family:system-ui;}
+.app{max-width:420px;height:100vh;margin:auto;background:#111b21;color:#fff;display:flex;flex-direction:column;}
+.topbar{background:#202c33;padding:12px;font-weight:600;}
+.chat{display:flex;padding:12px;border-bottom:1px solid #222;cursor:pointer;}
+.avatar{width:44px;height:44px;border-radius:50%;background:#2a3942;display:flex;align-items:center;justify-content:center;margin-right:10px;font-weight:bold;}
+.chatScreen{display:none;flex-direction:column;height:100%;}
+.chatHeader{background:#202c33;padding:10px;display:flex;align-items:center;}
+.back{cursor:pointer;margin-right:10px;}
+.messages{flex:1;padding:10px;background:url("https://i.imgur.com/w5rkSIj.jpg");background-size:cover;overflow-y:auto;}
+.msg{max-width:70%;padding:8px 10px;border-radius:8px;margin-bottom:6px;}
+.me{background:#005c4b;margin-left:auto;}
+.other{background:#202c33;}
+.time{font-size:10px;opacity:.6;text-align:right;}
+.inputBar{background:#202c33;padding:8px;display:flex;}
+.inputBar input{flex:1;padding:10px;border:none;border-radius:20px;outline:none;}
+.inputBar button{margin-left:6px;border:none;background:#00a884;color:#fff;padding:10px 14px;border-radius:50%;}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<div id="chatList">
+  <div class="topbar">WhatsApp</div>
+
+  <div class="chat" onclick="openChat('KA')">
+    <div class="avatar">KA</div>
+    <div><b>KA</b><br><small>Online</small></div>
+  </div>
+
+  <div class="chat" onclick="openChat('Gauri')">
+    <div class="avatar">G</div>
+    <div><b>Gauri</b><br><small>Last seen recently</small></div>
+  </div>
+</div>
+
+<div id="chatScreen" class="chatScreen">
+  <div class="chatHeader">
+    <span class="back" onclick="goBack()">←</span>
+    <span id="chatTitle"></span>
+  </div>
+
+  <div id="messages" class="messages"></div>
+
+  <div class="inputBar">
+    <input id="msgInput" placeholder="Type a message">
+    <button onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+let currentChat="";
+
+function openChat(name){
+  currentChat=name;
+  chatList.style.display="none";
+  chatScreen.style.display="flex";
+  chatTitle.innerText=name;
+  messages.innerHTML="";
+  addMessage("Hi 👋","other");
+}
+
+function goBack(){
+  chatScreen.style.display="none";
+  chatList.style.display="block";
+}
+
+function sendMsg(){
+  let text=msgInput.value.trim();
+  if(!text) return;
+  addMessage(text,"me");
+  msgInput.value="";
+  setTimeout(()=>addMessage(humanReply(text),"other"),600);
+}
+
+function humanReply(msg){
+  msg = msg.toLowerCase();
+
+  // HI
+  if(/^(hi|hello|hey)$/.test(msg)){
+    return "How are you?";
+  }
+
+  // HOW ARE YOU
+  if(/how are you|kaise ho|kya haal/.test(msg)){
+    return currentChat==="Gauri"
+      ? "Main theek hoon 😊"
+      : "Badhiya hoon bhai 👍";
+  }
+
+  // I'M GOOD
+  if(/i'?m good|good|fine/.test(msg)){
+    return "Nice 😊";
+  }
+
+  // YES
+  if(/^(yes|haan|ha)$/.test(msg)){
+    return "OK";
+  }
+
+  // WHAT DOING
+  if(/kya kar rahe|wyd/.test(msg)){
+    return currentChat==="Gauri"
+      ? "Abhi thoda timepass kar rahi hoon"
+      : "Phone chala raha hoon";
+  }
+
+  // MARKS
+  if(/marks|kitne marks/.test(msg)){
+    return currentChat==="Gauri"
+      ? "Theek aaye 😅"
+      : "Bas pass ho gaya 😂";
+  }
+
+  // DEFAULT (GENDER LOGIC)
+  return currentChat==="Gauri"
+    ? ["Samjhi","Hmm","Achha","Theek hai"][Math.floor(Math.random()*4)]
+    : ["Samjha","Hmm","Theek hai","Sahi hai"][Math.floor(Math.random()*4)];
+}
+
+function addMessage(text,type){
+  let d=document.createElement("div");
+  d.className="msg "+type;
+  d.innerHTML = `${text}<div class="time">${
+    new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+  }</div>`;
+  messages.appendChild(d);
+  messages.scrollTop = messages.scrollHeight;
+}
+</script>
+
+</body>
+</html>
