@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Texas Hold'em – 5 Player Table</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+margin:0;
+background:#081c15;
+font-family:Arial;
+color:#fff;
+overflow:hidden;
+}
+
+/* TABLE */
+.table{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:95vw;
+max-width:520px;
+height:520px;
+background:radial-gradient(circle,#1b6b4f,#073024);
+border-radius:50%;
+box-shadow:0 0 50px #000 inset;
+}
+
+/* SEATS */
+.seat{
+position:absolute;
+width:100%;
+text-align:center;
+}
+.seat .name{font-size:.9rem;opacity:.85}
+.cards{margin-top:4px}
+
+#p0{bottom:15px}      /* KA */
+#p1{bottom:120px; left:-35%}
+#p2{top:40px}
+#p3{bottom:120px; right:-35%}
+#p4{top:120px}
+
+.card{
+display:inline-block;
+width:38px;
+height:55px;
+background:#fff;
+color:#000;
+border-radius:6px;
+margin:2px;
+line-height:55px;
+font-size:1rem;
+font-weight:bold;
+}
+.red{color:red}
+
+/* CENTER */
+.center{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+}
+.pot{margin-top:8px;font-weight:bold}
+
+/* DEALER */
+.dealer{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+width:22px;
+height:22px;
+background:#ffd700;
+border-radius:50%;
+font-size:.7rem;
+line-height:22px;
+color:#000;
+}
+
+/* FOOTER */
+.footer{
+position:fixed;
+bottom:8px;
+width:100%;
+text-align:center;
+opacity:.7;
+font-size:.85rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="table">
+
+<!-- DEALER -->
+<div class="dealer">D</div>
+
+<!-- PLAYERS -->
+<div class="seat" id="p0">
+<div class="name">KA (You)</div>
+<div class="cards" id="cards0"></div>
+</div>
+
+<div class="seat" id="p1">
+<div class="name">Player 1</div>
+<div class="cards" id="cards1"></div>
+</div>
+
+<div class="seat" id="p2">
+<div class="name">Player 2</div>
+<div class="cards" id="cards2"></div>
+</div>
+
+<div class="seat" id="p3">
+<div class="name">Player 3</div>
+<div class="cards" id="cards3"></div>
+</div>
+
+<div class="seat" id="p4">
+<div class="name">Player 4</div>
+<div class="cards" id="cards4"></div>
+</div>
+
+<!-- CENTER -->
+<div class="center">
+<div class="cards" id="board"></div>
+<div class="pot">Pot: 🪙 <span id="pot">0</span></div>
+</div>
+
+</div>
+
+<div class="footer">Texas Hold’em • SB 10 / BB 20 • Made by KA</div>
+
+<script>
+/* DECK */
+const suits=["♠","♥","♦","♣"];
+const values=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+let deck=[];
+let players=[[],[],[],[],[]];
+let board=[];
+let pot=0;
+
+function buildDeck(){
+deck=[];
+for(let s of suits)
+for(let v of values)
+deck.push({v,s});
+deck.sort(()=>Math.random()-0.5);
+}
+
+function draw(){
+return deck.shift();
+}
+
+function cardHTML(c){
+let red=(c.s==="♥"||c.s==="♦")?" red":"";
+return `<div class="card${red}">${c.v}${c.s}</div>`;
+}
+
+/* ANIMATED DEAL */
+async function dealCards(){
+buildDeck();
+players=[[],[],[],[],[]];
+board=[];
+pot=30; // SB + BB
+
+// clear
+for(let i=0;i<5;i++)document.getElementById("cards"+i).innerHTML="";
+document.getElementById("board").innerHTML="";
+document.getElementById("pot").innerText=pot;
+
+// 2 rounds
+for(let r=0;r<2;r++){
+for(let p=0;p<5;p++){
+await sleep(300);
+let c=draw();
+players[p].push(c);
+document.getElementById("cards"+p).innerHTML+=cardHTML(c);
+}
+}
+
+// flop
+await sleep(800);
+board.push(draw(),draw(),draw());
+renderBoard();
+
+// turn
+await sleep(800);
+board.push(draw());
+renderBoard();
+
+// river
+await sleep(800);
+board.push(draw());
+renderBoard();
+}
+
+function renderBoard(){
+document.getElementById("board").innerHTML="";
+board.forEach(c=>{
+document.getElementById("board").innerHTML+=cardHTML(c);
+});
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+dealCards();
+</script>
+
+</body>
+</html>
