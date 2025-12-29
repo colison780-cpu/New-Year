@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Question Card Game</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: "Georgia", serif;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #141414, #000);
+    color: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 420px;
+    text-align: center;
+  }
+
+  h1 {
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    font-weight: normal;
+  }
+
+  .card {
+    background: linear-gradient(145deg, #1b1b1b, #0c0c0c);
+    border-radius: 18px;
+    padding: 25px;
+    min-height: 140px;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  .card.animate {
+    transform: rotateY(360deg) scale(1.03);
+    box-shadow: 0 0 30px rgba(255,255,255,0.15);
+  }
+
+  .options {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .option {
+    padding: 12px;
+    border-radius: 25px;
+    border: 1px solid #555;
+    background: transparent;
+    color: #f2f2f2;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .option:hover {
+    background: #f2f2f2;
+    color: #000;
+  }
+
+  .option.selected {
+    background: #f2f2f2;
+    color: #000;
+    font-weight: bold;
+  }
+
+  button {
+    margin-top: 25px;
+    padding: 12px 30px;
+    border-radius: 30px;
+    border: 1px solid #777;
+    background: transparent;
+    color: #f2f2f2;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .timer {
+    margin-top: 12px;
+    font-size: 13px;
+    opacity: 0.6;
+  }
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>🎴 QUESTION GAME</h1>
+
+  <div id="card" class="card">
+    Click Start to begin
+  </div>
+
+  <div id="options" class="options"></div>
+
+  <button id="nextBtn" onclick="nextQuestion()">Start</button>
+  <div id="timer" class="timer"></div>
+</div>
+
+<script>
+const questions = [
+  "How are you feeling right now?",
+  "What best describes you today?",
+  "What matters most to you?",
+  "How do you handle stress?",
+  "What defines a good day?",
+  "How do you see this year?",
+  "What do you value more?",
+  "What motivates you?",
+  "What kind of person are you?",
+  "What helps you relax?"
+];
+
+const optionSets = [
+  ["Good", "Fine", "Just like you", "Don’t want to tell"],
+  ["Calm", "Busy", "Confused", "Excited"],
+  ["Peace", "Money", "Growth", "Happiness"],
+  ["Ignore it", "Overthink", "Handle calmly", "Avoid people"],
+  ["No stress", "Good food", "Good people", "Quiet time"],
+  ["Relaxed", "Stressful", "Adventurous", "Unpredictable"],
+  ["Time", "Freedom", "Security", "Success"],
+  ["Goals", "People", "Dreams", "Fear of failure"],
+  ["Observer", "Leader", "Supporter", "Independent"],
+  ["Music", "Sleep", "Silence", "Talking"]
+];
+
+let index = -1;
+let locked = false;
+
+function nextQuestion() {
+  if (locked) return;
+
+  index = (index + 1) % questions.length;
+  const card = document.getElementById("card");
+  const optionsDiv = document.getElementById("options");
+  const btn = document.getElementById("nextBtn");
+  const timer = document.getElementById("timer");
+
+  card.classList.remove("animate");
+  void card.offsetWidth;
+  card.classList.add("animate");
+
+  card.textContent = questions[index];
+  optionsDiv.innerHTML = "";
+
+  optionSets[index].forEach(opt => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.textContent = opt;
+    div.onclick = () => selectOption(div);
+    optionsDiv.appendChild(div);
+  });
+
+  btn.disabled = true;
+  locked = true;
+
+  let sec = 5;
+  timer.textContent = `Next question in ${sec}s`;
+
+  const interval = setInterval(() => {
+    sec--;
+    timer.textContent = `Next question in ${sec}s`;
+    if (sec === 0) {
+      clearInterval(interval);
+      timer.textContent = "";
+      btn.disabled = false;
+      locked = false;
+      btn.textContent = "Next";
+    }
+  }, 1000);
+}
+
+function selectOption(el) {
+  document.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+  el.classList.add("selected");
+}
+</script>
+</body>
+</html>
