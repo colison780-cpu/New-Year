@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+html,body{
+margin:0;height:100%;
+font-family:Arial;
+color:white;
+overflow:hidden;
+background:radial-gradient(circle,#0a0a3a,#000);
+}
+
+canvas{position:fixed;top:0;left:0}
+
+.center{
+position:absolute;
+top:50%;left:50%;
+transform:translate(-50%,-50%);
+width:92%;max-width:420px;
+text-align:center;
+z-index:5;
+padding:22px;
+border-radius:22px;
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(14px);
+box-shadow:0 0 40px rgba(0,255,255,.4);
+}
+
+/* BIG COUNT */
+#countdown{
+font-size:4rem;
+font-weight:bold;
+animation:pulse 1s infinite;
+}
+@keyframes pulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.2)}
+100%{transform:scale(1)}
+}
+
+/* TITLE */
+h1{
+display:none;
+font-size:2.4rem;
+animation:bounceIn 1s ease forwards;
+text-shadow:0 0 35px cyan;
+}
+@keyframes bounceIn{
+0%{transform:scale(0);opacity:0}
+70%{transform:scale(1.3)}
+100%{transform:scale(1);opacity:1}
+}
+
+/* SUBTITLE TYPING */
+.subtitle{
+margin-top:12px;
+font-size:1.2rem;
+color:gold;
+min-height:1.5em;
+}
+.cursor{
+display:inline-block;
+width:10px;
+animation:blink 1s infinite;
+}
+@keyframes blink{
+50%{opacity:0}
+}
+
+/* FLOATING EMOJIS */
+.emoji{
+position:fixed;
+font-size:22px;
+animation:float 6s linear infinite;
+opacity:.8;
+}
+@keyframes float{
+0%{transform:translateY(110vh)}
+100%{transform:translateY(-10vh)}
+}
+
+/* SECTIONS */
+.section{display:none;margin-top:18px}
+
+button{
+padding:12px 22px;
+margin:6px;
+border:none;
+border-radius:30px;
+font-size:1rem;
+cursor:pointer;
+transition:.2s;
+}
+button:active{transform:scale(.95)}
+
+.green{background:#00e676}
+.blue{background:#00b0ff}
+.orange{background:#ff9100}
+.red{background:#ff5252}
+.purple{background:#aa00ff}
+.gray{background:#9e9e9e}
+
+/* RESULT */
+#result{
+animation:slideUp .8s ease forwards;
+}
+@keyframes slideUp{
+0%{transform:translateY(40px);opacity:0}
+100%{transform:translateY(0);opacity:1}
+}
+
+/* THANK YOU */
+.thanks{
+margin-top:15px;
+font-size:1.2rem;
+animation:thankPulse 1.5s infinite;
+}
+@keyframes thankPulse{
+0%{opacity:.5}
+50%{opacity:1}
+100%{opacity:.5}
+}
+
+.madeby{
+position:fixed;
+bottom:10px;width:100%;
+text-align:center;
+font-size:.9rem;
+opacity:.8;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<!-- FLOATING EMOJIS -->
+<div class="emoji" style="left:10%;animation-delay:0s">🎊</div>
+<div class="emoji" style="left:40%;animation-delay:2s">✨</div>
+<div class="emoji" style="left:70%;animation-delay:4s">🎉</div>
+
+<div class="center">
+
+<div id="countdown"></div>
+
+<h1 id="title">🎊 HAPPY NEW YEAR 2026 🎊</h1>
+<div class="subtitle" id="typed"></div>
+
+<div class="section" id="nameBox">
+<p>What should KA call you?</p>
+<input id="uname" placeholder="Enter your name"
+style="padding:10px;border-radius:10px;border:none;width:80%">
+<br><br>
+<button class="green" onclick="startQuestions()">Continue</button>
+</div>
+
+<div class="section" id="q1">
+<p id="greet"></p>
+<button class="green" onclick="saveQ1('Good')">Good</button>
+<button class="blue" onclick="saveQ1('Fine')">Fine</button>
+<button class="purple" onclick="saveQ1('Just like you')">Just like you</button>
+<button class="gray" onclick="saveQ1('Prefer not to say')">Don't want to tell</button>
+</div>
+
+<div class="section" id="q2">
+<p>🎮 Play a game with KA today?</p>
+<button class="green" onclick="saveQ2('Yes')">YES</button>
+<button class="orange" onclick="saveQ2('Let KA decide')">LET KA DECIDE</button>
+</div>
+
+<div class="section" id="q3">
+<p>🌟 How you see yourself this year</p>
+<button class="blue" onclick="saveQ3('Relaxed')">Relaxed</button>
+<button class="red" onclick="saveQ3('Stressful')">Stressful</button>
+<button class="purple" onclick="saveQ3('Thriller')">Thriller</button>
+</div>
+
+<div class="section" id="q4">
+<p>🎯 New Year Resolution</p>
+<button class="green" onclick="finish('Will share later')">I WILL TELL YOU ON CHAT</button>
+<button class="red" onclick="finish('Private')">NONE OF YOUR BUSINESS</button>
+<button class="orange" onclick="finish('Undecided')">I DIDN'T DECIDED YET</button>
+</div>
+
+<div class="section" id="result"></div>
+
+</div>
+
+<div class="madeby">Made by one and only <b>KA</b></div>
+
+<script>
+let userName="",A1="",A2="",A3="",A4="";
+
+/* 5 SECOND TEST COUNTDOWN */
+let target=Date.now()+5000;
+let cd=document.getElementById("countdown");
+
+let t=setInterval(()=>{
+let d=target-Date.now();
+if(d<=0){
+clearInterval(t);
+blast();
+}else cd.innerHTML=Math.ceil(d/1000);
+},1000);
+
+function blast(){
+document.body.style.animation="flash .2s 3";
+navigator.vibrate?.(200);
+cd.style.display="none";
+title.style.display="block";
+typeText("THIS YEAR SHOULD BE MEMORABLE FOR YOU");
+confetti();
+nameBox.style.display="block";
+}
+
+function typeText(txt){
+typed.innerHTML="";
+let i=0;
+let iv=setInterval(()=>{
+typed.innerHTML=txt.slice(0,i++)+'<span class="cursor">|</span>';
+if(i>txt.length)clearInterval(iv);
+},70);
+}
+
+function startQuestions(){
+userName=uname.value.trim();
+if(!userName){alert("Enter name");return;}
+nameBox.style.display="none";
+q1.style.display="block";
+let h=new Date().getHours();
+let g=h<12?"Good Morning":h<18?"Good Evening":"Good Night";
+greet.innerHTML=`${g}, ${userName} 😊 How are you?`;
+}
+
+function saveQ1(v){A1=v;q1.style.display="none";q2.style.display="block";}
+function saveQ2(v){A2=v;q2.style.display="none";q3.style.display="block";}
+function saveQ3(v){A3=v;q3.style.display="none";q4.style.display="block";}
+
+function finish(v){
+A4=v;
+q4.style.display="none";
+result.style.display="block";
+result.innerHTML=`
+<b>Response recorded ✅</b><hr>
+<p><b>Name:</b> ${userName}</p>
+<p><b>How you are:</b> ${A1}</p>
+<p><b>Game with KA:</b> ${A2}</p>
+<p><b>This year:</b> ${A3}</p>
+<p><b>Resolution:</b> ${A4}</p>
+<div class="thanks">🎉 THANK YOU 🎉</div>
+`;
+}
+
+/* FIREWORKS */
+const c=document.getElementById("bg"),ctx=c.getContext("2d");
+let w,h;
+function resize(){w=c.width=innerWidth;h=c.height=innerHeight}
+resize();onresize=resize;
+let p=[];
+function confetti(){
+for(let i=0;i<220;i++)
+p.push({x:Math.random()*w,y:-10,dy:Math.random()*4+2});
+}
+(function anim(){
+ctx.clearRect(0,0,w,h);
+ctx.fillStyle="white";
+p.forEach(e=>{ctx.fillRect(e.x,e.y,3,3);e.y+=e.dy});
+requestAnimationFrame(anim);
+})();
+</script>
+
+</body>
+</html>
