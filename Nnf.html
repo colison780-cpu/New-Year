@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KA WhatsApp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#ece5dd;
+}
+
+.app{
+max-width:420px;
+margin:auto;
+height:100vh;
+background:#fff;
+display:flex;
+flex-direction:column;
+border:1px solid #ccc;
+}
+
+.header{
+background:#075e54;
+color:#fff;
+padding:10px;
+font-weight:bold;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.header span{font-size:14px}
+
+.chat-list{
+flex:1;
+}
+
+.chat-item{
+padding:15px;
+border-bottom:1px solid #eee;
+cursor:pointer;
+}
+
+.chat-item:hover{background:#f5f5f5}
+
+.chat-screen{
+display:none;
+flex-direction:column;
+height:100%;
+}
+
+.chat-header{
+background:#075e54;
+color:#fff;
+padding:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.messages{
+flex:1;
+padding:10px;
+background:url('https://i.imgur.com/3ZQ3Z2E.jpg');
+overflow-y:auto;
+}
+
+.msg{
+max-width:70%;
+margin:6px 0;
+padding:8px 10px;
+border-radius:6px;
+font-size:14px;
+}
+
+.me{
+background:#dcf8c6;
+margin-left:auto;
+}
+
+.other{
+background:#fff;
+}
+
+.time{
+font-size:10px;
+opacity:.6;
+margin-top:4px;
+text-align:right;
+}
+
+.input-bar{
+display:flex;
+padding:8px;
+background:#f0f0f0;
+}
+
+.input-bar input{
+flex:1;
+padding:8px;
+border-radius:20px;
+border:1px solid #ccc;
+outline:none;
+}
+
+.input-bar button{
+margin-left:6px;
+padding:8px 12px;
+border:none;
+background:#075e54;
+color:white;
+border-radius:50%;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="header">
+<span>KA WhatsApp</span>
+<span>📷 ⋮</span>
+</div>
+
+<div class="chat-list" id="chatList">
+<div class="chat-item" onclick="openChat('KA')">KA</div>
+<div class="chat-item" onclick="openChat('Gauri')">Gauri</div>
+</div>
+
+<div class="chat-screen" id="chatScreen">
+<div class="chat-header">
+<span onclick="goBack()">⬅</span>
+<span id="chatTitle"></span>
+<span>📞 📎</span>
+</div>
+
+<div class="messages" id="messages"></div>
+
+<div class="input-bar">
+<input id="msgInput" placeholder="Type a message">
+<button onclick="sendMsg()">➤</button>
+</div>
+</div>
+
+</div>
+
+<script>
+let currentChat = "";
+
+function openChat(name){
+currentChat = name;
+chatTitle.innerText = name;
+chatList.style.display="none";
+chatScreen.style.display="flex";
+messages.innerHTML="";
+addMessage("Hey", "other");
+}
+
+function goBack(){
+chatScreen.style.display="none";
+chatList.style.display="block";
+}
+
+function sendMsg(){
+let input = msgInput;
+let text = input.value.trim();
+if(!text) return;
+addMessage(text,"me");
+input.value="";
+setTimeout(()=>{
+addMessage(humanReply(text),"other");
+},600);
+}
+
+function humanReply(msg){
+msg = msg.toLowerCase();
+
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+
+if(msg.includes("dead")) return "r u idiot";
+
+if(msg==="i am king" && currentChat==="Gauri")
+return "aap to mahan hai king KA";
+
+if(msg==="who are you mister" && currentChat==="KA")
+return "I am a king";
+
+if(/^(hi|hello|hey)$/.test(msg)){
+return currentChat==="Gauri" ? "khelega" : "khelegi";
+}
+
+if(/how are you|kya haal/.test(msg)){
+return currentChat==="Gauri" ? "achhi hoon 🙂" : "theek hoon bhai";
+}
+
+if(/acha/.test(msg)){
+return currentChat==="Gauri" ? "samjhi" : "samjha";
+}
+
+if(/what are you doing|kya kar/.test(msg)){
+return pick(["Nothing","I'm busy","I'm always busy","Bas kaam hi kaam"]);
+}
+
+if(/marks|kitne marks/.test(msg)){
+return currentChat==="Gauri" ? "theek aaye 😅" : "bas pass ho gaya 😂";
+}
+
+if(/yes|haan|ha/.test(msg)) return "ok";
+
+return currentChat==="Gauri"
+? pick(["Theek hai","Hmm","Achha","Samjhi"])
+: pick(["Theek hai","Hmm","Sahi hai","Samjha"]);
+}
+
+function addMessage(text,type){
+let div=document.createElement("div");
+div.className="msg "+type;
+div.innerHTML=`${text}<div class="time">
+${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}
+</div>`;
+messages.appendChild(div);
+messages.scrollTop=messages.scrollHeight;
+}
+</script>
+
+</body>
+</html>
