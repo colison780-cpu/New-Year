@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KA Question Game</title>
+
+<style>
+*{box-sizing:border-box;font-family:Georgia,serif}
+
+body{
+margin:0;
+min-height:100vh;
+background:radial-gradient(circle at top,#1a1a1a,#000);
+color:#f5f5f5;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.container{
+width:92%;
+max-width:450px;
+text-align:center;
+}
+
+h1{
+letter-spacing:2px;
+font-weight:normal;
+margin-bottom:18px;
+}
+
+.card{
+background:linear-gradient(145deg,#1f1f1f,#0d0d0d);
+border-radius:18px;
+padding:25px;
+min-height:120px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:17px;
+transition:transform .6s ease,box-shadow .6s ease;
+}
+
+.card.flip{
+transform:rotateY(360deg);
+box-shadow:0 0 30px rgba(255,255,255,.12);
+}
+
+.options{
+margin-top:18px;
+display:grid;
+gap:10px;
+}
+
+.option{
+padding:12px;
+border-radius:25px;
+border:1px solid #666;
+cursor:pointer;
+transition:.25s;
+}
+
+.option:hover{
+background:#f5f5f5;
+color:#000;
+}
+
+.option.selected{
+background:#f5f5f5;
+color:#000;
+font-weight:bold;
+}
+
+.timer{
+margin-top:10px;
+font-size:13px;
+opacity:.6;
+}
+
+.hidden{display:none}
+
+.summary{
+text-align:left;
+margin-top:20px;
+background:#111;
+border-radius:14px;
+padding:15px;
+max-height:60vh;
+overflow:auto;
+}
+
+.download{
+margin-top:20px;
+padding:12px 26px;
+border-radius:30px;
+border:1px solid #aaa;
+background:transparent;
+color:white;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🎴 KA QUESTION GAME</h1>
+
+<div id="card" class="card">Tap to Start</div>
+<div id="options" class="options"></div>
+<div id="timer" class="timer"></div>
+
+<div id="summaryBox" class="summary hidden"></div>
+<button id="downloadBtn" class="download hidden" onclick="download()">⬇ Download Answers</button>
+
+</div>
+
+<script>
+const questions=[
+"How are you feeling right now?",
+"What describes you best today?",
+"What do you value most?",
+"How do you handle pressure?",
+"What gives you peace?",
+"What excites you?",
+"What drains you?",
+"What defines success?",
+"What motivates you daily?",
+"What scares you the most?",
+"How do you relax?",
+"What makes you angry?",
+"What makes you smile?",
+"What helps you focus?",
+"What is your strength?",
+"What is your weakness?",
+"What do you avoid?",
+"What do you enjoy most?",
+"What matters in friendship?",
+"What defines happiness?",
+"What makes a year good?",
+"What do you seek?",
+"What keeps you awake?",
+"What makes you proud?",
+"What do you miss?",
+"What do you hope for?",
+"What challenges you?",
+"What do you trust?",
+"What drives your decisions?",
+"How do you see yourself this year?"
+];
+
+const options=[
+["Good","Fine","Neutral","Prefer not to say"],
+["Calm","Busy","Confused","Energetic"],
+["Peace","Money","Growth","Freedom"],
+["Stay calm","Overthink","Face it","Avoid"],
+["Silence","Music","Sleep","People"],
+["Progress","Travel","Ideas","Winning"],
+["Negativity","Noise","Stress","Waiting"],
+["Peace of mind","Stability","Achievement","Respect"],
+["Goals","Responsibility","Dreams","Fear"],
+["Failure","Loss","Change","Loneliness"],
+["Music","Sleep","Walking","Thinking"],
+["Dishonesty","Disrespect","Delays","Noise"],
+["Memories","People","Moments","Achievements"],
+["Discipline","Routine","Silence","Pressure"],
+["Consistency","Patience","Focus","Confidence"],
+["Overthinking","Delay","Trust","Anger"],
+["Conflict","Crowds","Noise","Drama"],
+["Freedom","Control","Learning","Exploring"],
+["Trust","Time","Honesty","Support"],
+["Balance","Peace","Freedom","Contentment"],
+["Growth","Memories","Lessons","Stability"],
+["Meaning","Control","Peace","Progress"],
+["Thoughts","Worries","Ideas","Noise"],
+["Effort","Integrity","Growth","Survival"],
+["People","Time","Moments","Places"],
+["Clarity","Stability","Peace","Change"],
+["Pressure","Expectations","Fear","Limits"],
+["Facts","People","Instinct","Experience"],
+["Logic","Emotion","Urgency","Values"],
+["Relaxed","Focused","Unpredictable","Balanced"]
+];
+
+let index=-1;
+let answers=[];
+let locked=false;
+
+const card=document.getElementById("card");
+const optionsDiv=document.getElementById("options");
+const timer=document.getElementById("timer");
+
+card.onclick=next;
+
+function next(){
+if(locked)return;
+index++;
+if(index>=questions.length){showSummary();return;}
+
+card.classList.remove("flip");void card.offsetWidth;card.classList.add("flip");
+card.textContent=questions[index];
+optionsDiv.innerHTML="";
+timer.textContent="";
+
+options[index].forEach(opt=>{
+let d=document.createElement("div");
+d.className="option";
+d.textContent=opt;
+d.onclick=()=>select(d,opt);
+optionsDiv.appendChild(d);
+});
+}
+
+function select(el,val){
+if(locked)return;
+locked=true;
+document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+el.classList.add("selected");
+answers.push({q:questions[index],a:val});
+
+let sec=2;
+timer.textContent=`Next in ${sec}s`;
+let i=setInterval(()=>{
+sec--;
+timer.textContent=`Next in ${sec}s`;
+if(sec===0){
+clearInterval(i);
+locked=false;
+next();
+}
+},1000);
+}
+
+function showSummary(){
+card.textContent="🎊 This Year Should Be Memorable For You";
+optionsDiv.innerHTML="";
+timer.textContent="";
+document.getElementById("summaryBox").classList.remove("hidden");
+document.getElementById("downloadBtn").classList.remove("hidden");
+
+let html="<b>Response Recorded ✅</b><hr>";
+answers.forEach((x,i)=>{
+html+=`<p><b>${i+1}. ${x.q}</b><br>→ ${x.a}</p>`;
+});
+document.getElementById("summaryBox").innerHTML=html;
+}
+
+function download(){
+let text="KA QUESTION GAME RESPONSES\n\n";
+answers.forEach((x,i)=>{
+text+=`${i+1}. ${x.q}\nAnswer: ${x.a}\n\n`;
+});
+let blob=new Blob([text],{type:"text/plain"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="KA_Answers.txt";
+a.click();
+}
+</script>
+</body>
+</html>
