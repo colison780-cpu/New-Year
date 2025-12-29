@@ -1,0 +1,89 @@
+<script>
+let currentChat = "";
+
+function openChat(name) {
+  currentChat = name;
+  document.getElementById("chatTitle").innerText = name;
+  document.getElementById("chatList").style.display = "none";
+  document.getElementById("chatScreen").style.display = "flex";
+  document.getElementById("messages").innerHTML = "";
+  addMessage("Hey 👋", "other");
+}
+
+function goBack() {
+  document.getElementById("chatScreen").style.display = "none";
+  document.getElementById("chatList").style.display = "block";
+}
+
+function sendMsg() {
+  const input = document.getElementById("msgInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  addMessage(text, "me");
+  input.value = "";
+
+  setTimeout(() => {
+    addMessage(smartReply(text), "other");
+  }, 600);
+}
+
+function smartReply(msg) {
+  msg = msg.toLowerCase();
+
+  const random = arr => arr[Math.floor(Math.random() * arr.length)];
+
+  if (/(hi|hello|hey|yo)/.test(msg))
+    return random(["Hi 😊", "Hey!", "Hello 👋", "Hey there"]);
+
+  if (/(how are you|how r u|how you)/.test(msg))
+    return random(["I’m good 😄", "Doing fine!", "All good, you?", "Pretty chill"]);
+
+  if (/(fine|good|ok|okay|great)/.test(msg))
+    return random(["Nice 👍", "Good to hear", "That’s good"]);
+
+  if (/(sad|tired|boring|bad)/.test(msg))
+    return random(["Oh 😕", "That sucks", "Hope it gets better"]);
+
+  if (/(what are you doing|wyd)/.test(msg))
+    return random(["Just chatting 😄", "Nothing much", "Relaxing"]);
+
+  if (/(where are you)/.test(msg))
+    return random(["At home", "Around", "Somewhere comfy 😄"]);
+
+  if (/(haha|lol)/.test(msg))
+    return random(["😂😂", "Haha", "😆"]);
+
+  if (/(bye|good night|gn)/.test(msg))
+    return random(["Bye 👋", "Good night 🌙", "Talk later"]);
+
+  if (/(thanks|thank you)/.test(msg))
+    return random(["Anytime 😊", "No problem", "Welcome"]);
+
+  if (msg.length <= 2)
+    return random(["Hmm?", "Yes?", "👀"]);
+
+  return random([
+    "Okay 🤔",
+    "Hmm interesting",
+    "Got it",
+    "Alright",
+    "I see",
+    "Tell me"
+  ]);
+}
+
+function addMessage(text, type) {
+  const msg = document.createElement("div");
+  msg.className = "msg " + type;
+  msg.innerHTML = `
+    ${text}
+    <div class="time">
+      ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+    </div>
+  `;
+  const messages = document.getElementById("messages");
+  messages.appendChild(msg);
+  messages.scrollTop = messages.scrollHeight;
+}
+</script>
