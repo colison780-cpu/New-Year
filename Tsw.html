@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KA Chat</title>
+
+<style>
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont;
+  background:#0b141a;
+}
+.app{
+  max-width:420px;
+  margin:auto;
+  height:100vh;
+  background:#111b21;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+}
+
+/* TOP BAR */
+.topbar{
+  background:#202c33;
+  padding:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:600;
+}
+.icons span{
+  margin-left:12px;
+  cursor:pointer;
+}
+
+/* CHAT LIST */
+.chatlist{
+  flex:1;
+}
+.chat{
+  display:flex;
+  padding:12px;
+  border-bottom:1px solid #222;
+  cursor:pointer;
+}
+.avatar{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:#2a3942;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  margin-right:10px;
+}
+.chatname{
+  font-weight:600;
+}
+.lastmsg{
+  color:#aaa;
+  font-size:14px;
+}
+
+/* CHAT SCREEN */
+.chatScreen{
+  display:none;
+  flex-direction:column;
+  height:100%;
+}
+.chatHeader{
+  background:#202c33;
+  padding:10px;
+  display:flex;
+  align-items:center;
+}
+.back{
+  margin-right:10px;
+  cursor:pointer;
+}
+.headerIcons{
+  margin-left:auto;
+}
+.headerIcons span{
+  margin-left:14px;
+  cursor:pointer;
+}
+
+.messages{
+  flex:1;
+  padding:10px;
+  background:url('https://i.imgur.com/8Km9tLL.png');
+  overflow-y:auto;
+}
+.msg{
+  max-width:70%;
+  padding:8px 10px;
+  margin-bottom:6px;
+  border-radius:8px;
+  font-size:15px;
+}
+.me{
+  background:#005c4b;
+  margin-left:auto;
+}
+.other{
+  background:#202c33;
+}
+.time{
+  font-size:10px;
+  text-align:right;
+  opacity:0.6;
+}
+
+/* INPUT */
+.inputBar{
+  background:#202c33;
+  padding:8px;
+  display:flex;
+  align-items:center;
+}
+.inputBar input{
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:20px;
+  outline:none;
+}
+.inputBar button{
+  margin-left:8px;
+  background:#00a884;
+  border:none;
+  padding:10px 14px;
+  border-radius:50%;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- CHAT LIST -->
+  <div id="chatList">
+    <div class="topbar">
+      WhatsApp
+      <div class="icons">
+        <span>📷</span><span>🔍</span><span>⋮</span>
+      </div>
+    </div>
+
+    <div class="chatlist">
+      <div class="chat" onclick="openChat('KA')">
+        <div class="avatar">KA</div>
+        <div>
+          <div class="chatname">KA</div>
+          <div class="lastmsg">Online</div>
+        </div>
+      </div>
+
+      <div class="chat" onclick="openChat('Gauri')">
+        <div class="avatar">G</div>
+        <div>
+          <div class="chatname">Gauri</div>
+          <div class="lastmsg">Typing...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAT SCREEN -->
+  <div id="chatScreen" class="chatScreen">
+    <div class="chatHeader">
+      <span class="back" onclick="goBack()">←</span>
+      <span id="chatTitle"></span>
+      <div class="headerIcons">
+        <span onclick="alert('Calling...')">📞</span>
+        <span onclick="alert('Video Call...')">🎥</span>
+        <span>⋮</span>
+      </div>
+    </div>
+
+    <div id="messages" class="messages"></div>
+
+    <div class="inputBar">
+      <span>📎</span>
+      <input id="msgInput" placeholder="Type a message">
+      <button onclick="sendMsg()">➤</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let currentChat = "";
+
+function openChat(name){
+  currentChat = name;
+  chatList.style.display="none";
+  chatScreen.style.display="flex";
+  chatTitle.innerText=name;
+  messages.innerHTML="";
+  addMessage("Hi 👋","other");
+}
+
+function goBack(){
+  chatScreen.style.display="none";
+  chatList.style.display="block";
+}
+
+function sendMsg(){
+  let input = msgInput.value.trim();
+  if(!input) return;
+  addMessage(input,"me");
+  msgInput.value="";
+  setTimeout(()=>addMessage(reply(input),"other"),600);
+}
+
+function reply(msg){
+  msg = msg.toLowerCase();
+
+  if(/hi|hello|hey/.test(msg)) return "Hi 🙂";
+  if(/kya haal|kaise ho/.test(msg)) return "Badhiya 😊 tum batao?";
+  if(/fine|good/.test(msg)) return "Achha hai 👍";
+  if(/marks|kitne marks/.test(msg)) return "Theek aaye, bas pass ho gaya 😅";
+  if(/kya kar rahe|wyd/.test(msg)) return "Abhi phone chala raha hoon";
+  if(/kab|when/.test(msg)) return "Shaam ko dekhte hain";
+  if(/haan|yes/.test(msg)) return "Achha 👍";
+  if(/nahi|no/.test(msg)) return "Arre kyun?";
+  if(/bye|good night/.test(msg)) return "Okay bye 🌙";
+
+  return [
+    "Hmm",
+    "Achha",
+    "Samjha",
+    "Dekhte hain",
+    "Theek hai"
+  ][Math.floor(Math.random()*5)];
+}
+
+function addMessage(text,type){
+  let div=document.createElement("div");
+  div.className="msg "+type;
+  div.innerHTML=`${text}<div class="time">
+  ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+  </div>`;
+  messages.appendChild(div);
+  messages.scrollTop=messages.scrollHeight;
+}
+</script>
+
+</body>
+</html>
