@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:linear-gradient(180deg,#050014,#120033);
+  color:white;
+  font-family:Arial;
+  overflow:hidden;
+  text-align:center;
+}
+
+.hidden{display:none}
+
+.container{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:15px;
+}
+
+.countdown{
+  font-size:80px;
+  animation:pulse 1s infinite;
+}
+@keyframes pulse{50%{transform:scale(1.2)}}
+
+.hny{
+  font-size:44px;
+  color:gold;
+  text-shadow:0 0 25px gold;
+}
+
+.card{
+  background:rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:20px;
+  width:100%;
+  max-width:420px;
+  margin-top:20px;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border-radius:10px;
+  border:none;
+  font-size:16px;
+}
+
+button{
+  width:100%;
+  margin-top:12px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-size:17px;
+  cursor:pointer;
+  background:linear-gradient(45deg,#ff9800,#ff5722);
+  color:white;
+}
+
+.spin{
+  animation:spin 1.5s linear infinite;
+}
+@keyframes spin{
+  0%{transform:rotate(0deg)}
+  100%{transform:rotate(360deg)}
+}
+
+.result{
+  font-size:22px;
+  color:#ffeb99;
+  margin-top:15px;
+}
+
+footer{
+  position:fixed;
+  bottom:10px;
+  width:100%;
+  font-size:13px;
+  opacity:.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="countdown" class="countdown">5</div>
+
+<div id="celebration" class="hidden">
+  <div class="hny">HAPPY NEW YEAR 2026 🎊</div>
+  <p style="color:gold">This year should be memorable for <b>YOU</b></p>
+</div>
+
+<div id="content" class="hidden card"></div>
+
+</div>
+
+<footer>Made by one and only <b>KA</b></footer>
+
+<script>
+/* TEST COUNTDOWN */
+let c=5;
+const cd=document.getElementById("countdown");
+const celebration=document.getElementById("celebration");
+const box=document.getElementById("content");
+
+let t=setInterval(()=>{
+  c--; cd.innerText=c;
+  if(c===0){
+    clearInterval(t);
+    cd.classList.add("hidden");
+    celebration.classList.remove("hidden");
+    setTimeout(startGame,1500);
+  }
+},1000);
+
+let data={};
+
+function startGame(){
+  box.classList.remove("hidden");
+  box.innerHTML=`
+    <h2>👥 Your Best Friends</h2>
+    <p>(One is already fixed 😉)</p>
+
+    <input placeholder="Friend 1" id="f1">
+    <input placeholder="Friend 2" id="f2">
+    <input placeholder="Friend 3" id="f3">
+    <input value="KA ❤️" disabled>
+
+    <button onclick="decide()">Reveal the real one</button>
+    <div id="loading" class="hidden spin">🔮</div>
+    <div id="result" class="result"></div>
+  `;
+}
+
+function decide(){
+  const names=[
+    f1.value.trim(),
+    f2.value.trim(),
+    f3.value.trim(),
+    "KA ❤️"
+  ].filter(n=>n);
+
+  if(names.length<2){
+    alert("Enter at least 1 name 😊");
+    return;
+  }
+
+  loading.classList.remove("hidden");
+  result.innerHTML="";
+
+  setTimeout(()=>{
+    loading.classList.add("hidden");
+
+    let chosen;
+    if(Math.random()<0.99){
+      chosen="KA ❤️";
+    }else{
+      chosen=names[Math.floor(Math.random()*(names.length-1))];
+    }
+
+    data.winner=chosen;
+
+    result.innerHTML=`
+      💛 <b>${chosen}</b> is your real one in 2026  
+      <br><br>
+      📸 Screenshot & send to KA
+    `;
+  },2000);
+}
+</script>
+
+</body>
+</html>
