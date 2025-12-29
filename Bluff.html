@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BLUFF STACK – KA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+margin:0;
+background:#0b0f1a;
+font-family:Arial;
+color:#fff;
+text-align:center;
+}
+h1{margin:10px;color:gold}
+#table{
+margin-top:10px;
+padding:10px;
+}
+.player{
+border:1px solid #333;
+border-radius:10px;
+padding:8px;
+margin:6px;
+}
+.active{border-color:gold}
+.stack{
+margin:15px;
+padding:10px;
+border:2px dashed #555;
+border-radius:10px;
+}
+button{
+padding:10px 18px;
+margin:6px;
+border:none;
+border-radius:20px;
+background:#00b0ff;
+color:white;
+font-size:1rem;
+}
+select,input{
+padding:8px;
+border-radius:8px;
+border:none;
+margin:4px;
+}
+#log{
+margin-top:10px;
+font-size:.9rem;
+opacity:.9;
+min-height:60px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎴 BLUFF STACK</h1>
+<p>You are <b>KA</b></p>
+
+<div id="table">
+  <div class="player" id="p0">KA – Cards: <span>5</span></div>
+  <div class="player" id="p1">Player 1 – Cards: <span>5</span></div>
+  <div class="player" id="p2">Player 2 – Cards: <span>5</span></div>
+  <div class="player" id="p3">Player 3 – Cards: <span>5</span></div>
+</div>
+
+<div class="stack">
+  Stack cards: <b id="stackCount">0</b><br>
+  Last declared: <b id="lastDecl">None</b>
+</div>
+
+<div id="controls">
+  <p>Your move</p>
+  Cards to play:
+  <select id="cardCount">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+  </select><br>
+  Declare as:
+  <select id="rank">
+    <option>Ace</option>
+    <option>King</option>
+    <option>Queen</option>
+    <option>Jack</option>
+  </select><br><br>
+  <button onclick="playTurn()">PLAY</button>
+</div>
+
+<div id="log"></div>
+
+<script>
+/* GAME STATE */
+let players=[
+  {name:"KA",cards:5,isHuman:true},
+  {name:"P1",cards:5},
+  {name:"P2",cards:5},
+  {name:"P3",cards:5}
+];
+
+let current=0;
+let stack=[];
+let declaredRank=null;
+
+/* UPDATE UI */
+function updateUI(){
+players.forEach((p,i)=>{
+document.querySelector(`#p${i} span`).innerText=p.cards;
+document.getElementById("p"+i).classList.toggle("active",i===current);
+});
+document.getElementById("stackCount").innerText=stack.length;
+document.getElementById("lastDecl").innerText=declaredRank||"None";
+}
+
+/* LOG */
+function log(t){
+document.getElementById("log").innerHTML=t;
+}
+
+/* NEXT PLAYER */
+function nextPlayer(){
+current=(current+1)%players.length;
+updateUI();
+if(!players[current].isHuman){
+setTimeout(aiTurn,1200);
+}
+}
+
+/* HUMAN PLAY */
+function playTurn(){
+let cnt=parseInt(cardCount.value);
+let rank=document.getElementById("rank").value;
+if(players[0].cards<cnt){
+alert("Not enough cards");
+return;
+}
+players[0].cards-=cnt;
+stack.push({count:cnt,rank,by:"KA"});
+declaredRank=rank;
+log(`KA played ${cnt} card(s) as ${rank}`);
+nextPlayer();
+}
+
+/* AI TURN */
+function aiTurn(){
+let ai=players[current];
+let cnt=Math.min(1+Math.floor(Math.random()*2),ai.cards);
+let ranks=["Ace","King","Queen","Jack"];
+let say=ranks[Math.floor(Math.random()*4)];
+ai.cards-=cnt;
+stack.push({count:cnt,rank:say,by:ai.name});
+declaredRank=say;
+log(`${ai.name} played ${cnt} card(s) as ${say}`);
+
+setTimeout(()=>{
+// AI decision: call bluff randomly
+if(Math.random()<0.25 && stack.length>1){
+callBluff(ai.name);
+}else{
+nextPlayer();
+}
+},800);
+}
+
+/* CALL BLUFF */
+function callBluff(caller){
+let last=stack[stack.length-1];
+let truth=Math.random()>0.5; // simplified truth
+if(truth){
+log(`${caller} called bluff ❌ Wrong! Took stack.`);
+players[current].cards+=stack.length;
+}else{
+log(`${caller} caught bluff ✅ Liar takes stack.`);
+players.find(p=>p.name===last.by).cards+=stack.length;
+}
+stack=[];
+declaredRank=null;
+nextPlayer();
+}
+
+/* START */
+updateUI();
+</script>
+
+</body>
+</html>
