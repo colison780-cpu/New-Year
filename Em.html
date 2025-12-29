@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Texas Hold'em – KA Mode</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:radial-gradient(circle,#0b513a,#02160f);
+color:#fff;
+text-align:center;
+}
+h1{margin:10px}
+.table{
+margin:auto;
+max-width:500px;
+background:#114c36;
+border-radius:20px;
+padding:15px;
+box-shadow:0 0 30px #000 inset;
+}
+.cards{margin:8px}
+.card{
+display:inline-block;
+width:52px;
+height:72px;
+background:#fff;
+color:#000;
+border-radius:8px;
+margin:4px;
+line-height:72px;
+font-weight:bold;
+font-size:1.3rem;
+}
+.red{color:red}
+.controls button{
+padding:10px 18px;
+margin:5px;
+border:none;
+border-radius:25px;
+font-size:1rem;
+cursor:pointer;
+}
+.bet{background:#ffd700}
+.fold{background:#ff5252}
+.call{background:#00e676}
+select{
+padding:6px;
+border-radius:10px;
+margin:5px;
+}
+.status{margin-top:10px;font-weight:bold}
+.footer{
+margin-top:10px;
+font-size:.85rem;
+opacity:.7
+}
+</style>
+</head>
+
+<body>
+
+<h1>♠ Texas Hold'em vs KA ♣</h1>
+
+<div>
+Difficulty:
+<select id="difficulty">
+<option value="easy">Easy</option>
+<option value="medium">Medium</option>
+<option value="hard">Hard</option>
+</select>
+</div>
+
+<div class="table">
+
+<p>🪙 You: <b id="playerChips">1000</b> | KA: <b id="kaChips">1000</b></p>
+
+<h3>Your Cards</h3>
+<div class="cards" id="playerCards"></div>
+
+<h3>KA Cards</h3>
+<div class="cards" id="kaCards"></div>
+
+<h3>Community</h3>
+<div class="cards" id="board"></div>
+
+<div class="controls">
+<button class="bet" onclick="bet()">Bet 100</button>
+<button class="call" onclick="call()">Call</button>
+<button class="fold" onclick="fold()">Fold</button>
+</div>
+
+<div class="status" id="status"></div>
+
+</div>
+
+<div class="footer">Made by one and only <b>KA</b></div>
+
+<script>
+const suits=["♠","♥","♦","♣"];
+const values=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+let deck=[],player=[],ka=[],board=[];
+let pot=0,stage=0;
+let pChips=1000,kChips=1000;
+
+function buildDeck(){
+deck=[];
+for(let s of suits)
+for(let v of values)
+deck.push({v,s});
+deck.sort(()=>Math.random()-0.5);
+}
+
+function draw(n){return deck.splice(0,n);}
+
+function show(el,cards,hide=false){
+el.innerHTML="";
+cards.forEach(c=>{
+let d=document.createElement("div");
+d.className="card";
+if(c.s==="♥"||c.s==="♦")d.classList.add("red");
+d.innerHTML=hide?"🂠":c.v+c.s;
+el.appendChild(d);
+});
+}
+
+function rank(cards){
+let counts={};
+cards.forEach(c=>counts[c.v]=(counts[c.v]||0)+1);
+let vals=Object.values(counts);
+if(vals.includes(3))return 4;
+if(vals.filter(v=>v===2).length===2)return 3;
+if(vals.includes(2))return 2;
+return 1;
+}
+
+function start(){
+buildDeck();
+player=draw(2);
+ka=draw(2);
+board=[];
+stage=0;
+pot=0;
+show(playerCards,player);
+show(kaCards,ka,true);
+show(boardDiv,board);
+status("Your move");
+}
+
+function bet(){
+if(pChips<100)return;
+pChips-=100;pot+=100;
+update();
+kaMove();
+}
+
+function call(){
+kaMove(true);
+}
+
+function fold(){
+status("You folded. KA wins.");
+kChips+=pot;
+reset();
+}
+
+function kaMove(force=false){
+let diff=difficulty.value;
+let kaRank=rank(ka.concat(board));
+let chance=Math.random();
+
+let willCall=
+diff==="easy"?chance>0.5:
+diff==="medium"?kaRank>=2||chance>0.6:
+kaRank>=2||chance>0.3;
+
+if(force||willCall){
+kChips-=100;pot+=100;
+nextStage();
+}else{
+status("KA folded. You win!");
+pChips+=pot;
+reset();
+}
+}
+
+function nextStage(){
+stage++;
+if(stage===1)board=draw(3);
+else if(stage<=3)board.push(...draw(1));
+else return showdown();
+
+show(boardDiv,board);
+status("Next round");
+}
+
+function showdown(){
+show(kaCards,ka);
+let pRank=rank(player.concat(board));
+let kRank=rank(ka.concat(board));
+if(pRank>kRank){
+status("🎉 You win the pot!");
+pChips+=pot;
+}else if(kRank>pRank){
+status("♚ KA wins the pot!");
+kChips+=pot;
+}else{
+status("🤝 Tie! Pot split");
+pChips+=pot/2;kChips+=pot/2;
+}
+reset();
+}
+
+function reset(){
+setTimeout(()=>{
+update();
+start();
+},2000);
+}
+
+function update(){
+playerChips.innerText=pChips;
+kaChips.innerText=kChips;
+}
+
+function status(t){
+document.getElementById("status").innerText=t;
+}
+
+const playerCards=document.getElementById("playerCards");
+const kaCards=document.getElementById("kaCards");
+const boardDiv=document.getElementById("board");
+
+start();
+</script>
+
+</body>
+</html>
