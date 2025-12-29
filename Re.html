@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Texas Hold'em Table – KA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+margin:0;
+background:#0a1f16;
+font-family:Arial;
+color:#fff;
+text-align:center;
+}
+h1{margin:10px}
+
+.table{
+margin:auto;
+margin-top:20px;
+width:95%;
+max-width:520px;
+height:520px;
+background:radial-gradient(circle,#1c6b4f,#073024);
+border-radius:50%;
+box-shadow:0 0 40px #000 inset;
+position:relative;
+padding-top:20px;
+}
+
+.player, .ka{
+position:absolute;
+width:100%;
+}
+
+.ka{top:30px}
+.player{bottom:30px}
+
+.cards{
+margin:5px;
+}
+
+.card{
+display:inline-block;
+width:52px;
+height:72px;
+background:white;
+color:black;
+border-radius:8px;
+margin:3px;
+line-height:72px;
+font-weight:bold;
+font-size:1.2rem;
+}
+.red{color:red}
+
+.board{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+}
+
+.controls button{
+padding:10px 18px;
+margin:6px;
+border:none;
+border-radius:25px;
+font-size:1rem;
+cursor:pointer;
+}
+.bet{background:#ffd700}
+.check{background:#00e676}
+.fold{background:#ff5252}
+
+.info{
+margin-top:10px;
+font-weight:bold;
+}
+
+select{
+padding:6px;
+border-radius:10px;
+}
+
+.footer{
+margin-top:8px;
+font-size:.85rem;
+opacity:.7;
+}
+</style>
+</head>
+
+<body>
+
+<h1>♠ Texas Hold'em vs KA ♣</h1>
+
+Difficulty:
+<select id="difficulty">
+<option value="easy">Easy</option>
+<option value="medium">Medium</option>
+<option value="hard">Hard</option>
+</select>
+
+<div class="table">
+
+<div class="ka">
+<b>KA 🪙 <span id="kaChips">1000</span></b>
+<div class="cards" id="kaCards"></div>
+</div>
+
+<div class="board">
+<div class="cards" id="board"></div>
+<p>Pot: 🪙 <span id="pot">0</span></p>
+</div>
+
+<div class="player">
+<div class="cards" id="playerCards"></div>
+<b>You 🪙 <span id="playerChips">1000</span></b>
+</div>
+
+</div>
+
+<div class="controls">
+<button class="bet" onclick="playerBet()">Bet 100</button>
+<button class="check" onclick="playerCheck()">Check</button>
+<button class="fold" onclick="playerFold()">Fold</button>
+</div>
+
+<div class="info" id="status"></div>
+
+<div class="footer">Made by one and only <b>KA</b></div>
+
+<script>
+const suits=["♠","♥","♦","♣"];
+const values=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+let deck=[],player=[],ka=[],board=[];
+let pot=0,stage=0;
+let pChips=1000,kChips=1000;
+
+function buildDeck(){
+deck=[];
+for(let s of suits)
+for(let v of values)
+deck.push({v,s});
+deck.sort(()=>Math.random()-0.5);
+}
+
+function draw(n){return deck.splice(0,n);}
+
+function show(el,cards,hide=false){
+el.innerHTML="";
+cards.forEach(c=>{
+let d=document.createElement("div");
+d.className="card";
+if(c.s==="♥"||c.s==="♦")d.classList.add("red");
+d.innerHTML=hide?"🂠":c.v+c.s;
+el.appendChild(d);
+});
+}
+
+function rank(cards){
+let counts={};
+cards.forEach(c=>counts[c.v]=(counts[c.v]||0)+1);
+let vals=Object.values(counts);
+if(vals.includes(3))return 4;
+if(vals.filter(v=>v===2).length===2)return 3;
+if(vals.includes(2))return 2;
+return 1;
+}
+
+function startHand(){
+buildDeck();
+player=draw(2);
+ka=draw(2);
+board=[];
+stage=0;
+pot=0;
+update();
+show(playerCards,player);
+show(kaCards,ka,true);
+show(boardDiv,board);
+status("Your move");
+}
+
+function playerBet(){
+if(pChips<100)return;
+pChips-=100;pot+=100;
+update();
+kaDecision();
+}
+
+function playerCheck(){
+kaDecision(true);
+}
+
+function playerFold(){
+status("You folded. KA wins.");
+kChips+=pot;
+endHand();
+}
+
+function kaDecision(playerChecked=false){
+let diff=difficulty.value;
+let strength=rank(ka.concat(board));
+let rnd=Math.random();
+
+let action;
+if(diff==="easy"){
+action=rnd>0.5?"check":"bet";
+}
+else if(diff==="medium"){
+action=strength>=2||rnd>0.6?"bet":"check";
+}
+else{
+action=strength>=2||rnd>0.3?"bet":"check";
+}
+
+if(action==="bet" && kChips>=100){
+kChips-=100;pot+=100;
+status("KA bets 100");
+nextStage();
+}else{
+status("KA checks");
+nextStage();
+}
+}
+
+function nextStage(){
+stage++;
+if(stage===1)board=draw(3);
+else if(stage<=3)board.push(...draw(1));
+else return showdown();
+
+show(boardDiv,board);
+update();
+}
+
+function showdown(){
+show(kaCards,ka);
+let pRank=rank(player.concat(board));
+let kRank=rank(ka.concat(board));
+if(pRank>kRank){
+status("🎉 You win the pot!");
+pChips+=pot;
+}
+else if(kRank>pRank){
+status("♚ KA wins the pot!");
+kChips+=pot;
+}
+else{
+status("🤝 Tie!");
+pChips+=pot/2;kChips+=pot/2;
+}
+endHand();
+}
+
+function endHand(){
+setTimeout(startHand,2500);
+}
+
+function update(){
+playerChips.innerText=pChips;
+kaChips.innerText=kChips;
+potSpan.innerText=pot;
+}
+
+function status(t){
+document.getElementById("status").innerText=t;
+}
+
+const playerCards=document.getElementById("playerCards");
+const kaCards=document.getElementById("kaCards");
+const boardDiv=document.getElementById("board");
+const potSpan=document.getElementById("pot");
+
+startHand();
+</script>
+
+</body>
+</html>
