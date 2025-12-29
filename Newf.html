@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KA WhatsApp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#ece5dd}
+.topbar{background:#075e54;color:white;padding:12px;font-size:18px}
+.tabs{display:flex;background:#075e54;color:white}
+.tab{flex:1;text-align:center;padding:10px;cursor:pointer;opacity:.7}
+.tab.active{border-bottom:3px solid #25d366;opacity:1}
+.screen{display:none}
+.screen.active{display:block}
+.chat{padding:15px;background:white;border-bottom:1px solid #eee;cursor:pointer}
+#chatScreen{display:none;flex-direction:column;height:100vh}
+.chatTop{background:#075e54;color:white;padding:10px;display:flex}
+.back{margin-right:10px;cursor:pointer}
+#messages{flex:1;padding:10px;overflow-y:auto;background:#ece5dd}
+.msg{max-width:70%;padding:8px 10px;border-radius:8px;margin:6px 0}
+.me{background:#dcf8c6;margin-left:auto}
+.other{background:white}
+.time{font-size:10px;opacity:.6;text-align:right}
+.inputBar{display:flex;padding:8px;background:#f0f0f0}
+input{flex:1;padding:10px;border-radius:20px;border:none}
+.send{background:#075e54;color:white;border:none;border-radius:50%;padding:10px 14px}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">WhatsApp</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="openTab('chats')">Chats</div>
+  <div class="tab" onclick="openTab('status')">Status</div>
+  <div class="tab" onclick="openTab('calls')">Calls</div>
+</div>
+
+<div id="chats" class="screen active">
+  <div class="chat" onclick="openChat('Gauri')">Gauri</div>
+  <div class="chat" onclick="openChat('KA')">KA</div>
+</div>
+
+<div id="status" class="screen">
+  <div class="chat">Gauri – Busy today</div>
+  <div class="chat">KA – Feeling relaxed</div>
+</div>
+
+<div id="calls" class="screen">
+  <div class="chat">📞 Gauri – Yesterday</div>
+  <div class="chat">📞 KA – Today</div>
+</div>
+
+<div id="chatScreen">
+  <div class="chatTop">
+    <div class="back" onclick="goBack()">←</div>
+    <div id="chatName"></div>
+  </div>
+
+  <div id="messages"></div>
+
+  <div class="inputBar">
+    <input id="msgInput" placeholder="Message" onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="send" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+let topic = "";
+
+function openTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+}
+
+function openChat(name){
+  document.getElementById("chatName").innerText=name;
+  document.getElementById("chatScreen").style.display="flex";
+  document.getElementById("messages").innerHTML="";
+  preload();
+}
+
+function preload(){
+  addMessage("Hey 😊", "other");
+  setTimeout(()=>addMessage("Kya haal hai?", "other"),600);
+}
+
+function goBack(){
+  document.getElementById("chatScreen").style.display="none";
+}
+
+function sendMsg(){
+  const input=document.getElementById("msgInput");
+  const text=input.value.trim();
+  if(!text)return;
+  addMessage(text,"me");
+  input.value="";
+  setTimeout(()=>addMessage(reply(text),"other"),700);
+}
+
+function reply(msg){
+  msg = msg.toLowerCase();
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+  if(/kya haal|kaisa/.test(msg)){
+    topic="mood";
+    return pick([
+      "Theek hoon 🙂 tu bata?",
+      "Badhiya, bas thoda tired",
+      "Sab sahi chal raha hai"
+    ]);
+  }
+
+  if(/theek|good|badhiya/.test(msg) && topic==="mood"){
+    return pick([
+      "Achha hai 😊",
+      "Sahi hai phir",
+      "Chalo badiya"
+    ]);
+  }
+
+  if(/kitne marks/.test(msg)){
+    topic="marks";
+    return pick([
+      "Thik aaye, aur better ho sakta tha",
+      "Expected ke around hi",
+      "Bas pass ho gaye 😅"
+    ]);
+  }
+
+  if(/kya kar/.test(msg)){
+    topic="activity";
+    return pick([
+      "Abhi free hoon",
+      "Kuch khaas nahi",
+      "Bas mobile chala raha"
+    ]);
+  }
+
+  if(/haan|hmm|acha/.test(msg)){
+    return pick([
+      "Aur bata?",
+      "Tu kya kar raha hai?",
+      "Aaj ka plan kya hai?"
+    ]);
+  }
+
+  if(/bye|good night|gn/.test(msg)){
+    return pick([
+      "Good night 🌙",
+      "Bye, kal baat karte hain",
+      "Take care"
+    ]);
+  }
+
+  return pick([
+    "Haan samjha",
+    "Theek hai",
+    "Dekh lenge",
+    "Aisa hi hota hai"
+  ]);
+}
+
+function addMessage(text,type){
+  const div=document.createElement("div");
+  div.className="msg "+type;
+  div.innerHTML=`${text}<div class="time">
+  ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+  </div>`;
+  const m=document.getElementById("messages");
+  m.appendChild(div);
+  m.scrollTop=m.scrollHeight;
+}
+</script>
+
+</body>
+</html>
