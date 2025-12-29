@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Random Reveal Game</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: "Georgia", serif;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #111 0%, #000 70%);
+    color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .container {
+    text-align: center;
+    width: 90%;
+    max-width: 420px;
+  }
+
+  h1 {
+    letter-spacing: 2px;
+    font-weight: normal;
+    margin-bottom: 25px;
+    opacity: 0.9;
+  }
+
+  .card {
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border-radius: 18px;
+    padding: 40px 20px;
+    min-height: 160px;
+    box-shadow: 0 0 0 rgba(255,255,255,0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1.5;
+    transition: transform 0.6s ease, box-shadow 0.6s ease;
+    transform-style: preserve-3d;
+  }
+
+  .card.animate {
+    transform: rotateY(360deg) scale(1.03);
+    box-shadow: 0 0 30px rgba(255,255,255,0.15);
+  }
+
+  button {
+    margin-top: 30px;
+    padding: 12px 28px;
+    font-size: 16px;
+    border-radius: 30px;
+    border: 1px solid #666;
+    background: transparent;
+    color: #f5f5f5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  button:hover:not(:disabled) {
+    background: #f5f5f5;
+    color: #000;
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .timer {
+    margin-top: 15px;
+    font-size: 13px;
+    opacity: 0.6;
+  }
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>🎴 RANDOM REVEAL</h1>
+
+  <div id="card" class="card">
+    Click the button to reveal a question
+  </div>
+
+  <button id="btn" onclick="drawQuestion()">Draw Card</button>
+  <div id="timer" class="timer"></div>
+</div>
+
+<script>
+const questions = [
+  "What’s the most useless talent you have?",
+  "If your life was a movie, what would it be called?",
+  "What’s the last thing you Googled?",
+  "What food can you eat every day?",
+  "What was your childhood nickname?",
+  "If you could rename yourself, what name would you choose?",
+  "Morning person or night owl?",
+  "What’s your most used app?",
+  "What song do you secretly like?",
+  "What’s the weirdest combo food you enjoy?",
+  "Who was your first best friend?",
+  "What’s one habit you want to change?",
+  "What makes you instantly happy?",
+  "What scares you a little?",
+  "What’s your comfort food?",
+  "What’s one thing people misunderstand about you?",
+  "Tea or coffee?",
+  "What’s your biggest time waste?",
+  "Who do you trust the most?",
+  "What makes you angry quickly?",
+  "Have you ever sent a message to the wrong person?",
+  "What’s the most embarrassing moment in public?",
+  "Have you ever laughed at the wrong time?",
+  "What’s the dumbest thing you believed as a kid?",
+  "Have you forgotten someone’s name instantly?",
+  "What’s your worst fashion phase?",
+  "What’s the weirdest dream you remember?",
+  "Ever pretended to know something you didn’t?",
+  "What emoji do you overuse?",
+  "What’s the strangest compliment you got?",
+  "Android or iPhone?",
+  "Money or peace?",
+  "Fame or privacy?",
+  "Work smart or work hard?",
+  "City life or village life?",
+  "Movies or series?",
+  "Early sleep or late scrolling?",
+  "Solo trip or group trip?",
+  "Call or text?",
+  "Risk or comfort?",
+  "If you could time travel, past or future?",
+  "If you had one superpower, what would it be?",
+  "What would you do if you were invisible for a day?",
+  "If you won 1 crore today, what’s first buy?",
+  "If animals could talk, which would be rudest?",
+  "What would your warning label say?",
+  "If you opened a shop, what would you sell?",
+  "What would your villain name be?",
+  "If your mood was weather, what is it?",
+  "One word people use for you?",
+  "What motivates you when low?",
+  "What’s one thing you’re proud of?",
+  "What does success mean to you?",
+  "Who inspires you silently?",
+  "What lesson did life teach recently?",
+  "What do you miss from childhood?",
+  "What makes you feel calm?",
+  "What do you overthink?",
+  "One promise to yourself?",
+  "What keeps you going?",
+  "Who texts first usually?",
+  "Who knows your secrets?",
+  "What kind of friend are you?",
+  "One thing friends tease you about?",
+  "Who survives zombie apocalypse?",
+  "Who gives best advice?",
+  "Who is always late?",
+  "Who is most dramatic?",
+  "Who is silent observer?",
+  "Who would you call at 3 AM?",
+  "Sweet or salty?",
+  "Beach or mountains?",
+  "Pizza or burger?",
+  "Sunrise or sunset?",
+  "Netflix or YouTube?",
+  "Rain or winter?",
+  "What makes a day perfect?",
+  "What ruins your mood instantly?",
+  "One skill you want?",
+  "What feels underrated?",
+  "What feels overrated?",
+  "What do you procrastinate?",
+  "What makes you feel confident?",
+  "One thing you’d never do again?",
+  "What makes you nostalgic?",
+  "One habit you secretly like?",
+  "What do you value most?",
+  "What feels like home?",
+  "One word for your future?",
+  "What would you change about today?",
+  "What excites you next year?",
+  "What calms your mind?",
+  "What makes you feel powerful?",
+  "One thing you learned recently?"
+];
+
+let cooldown = false;
+
+function drawQuestion() {
+  if (cooldown) return;
+
+  const card = document.getElementById("card");
+  const btn = document.getElementById("btn");
+  const timer = document.getElementById("timer");
+
+  const random = questions[Math.floor(Math.random() * questions.length)];
+
+  card.classList.remove("animate");
+  void card.offsetWidth;
+  card.classList.add("animate");
+
+  setTimeout(() => {
+    card.textContent = random;
+  }, 300);
+
+  cooldown = true;
+  btn.disabled = true;
+
+  let seconds = 5;
+  timer.textContent = `Next draw in ${seconds}s`;
+
+  const interval = setInterval(() => {
+    seconds--;
+    timer.textContent = `Next draw in ${seconds}s`;
+    if (seconds === 0) {
+      clearInterval(interval);
+      timer.textContent = "";
+      cooldown = false;
+      btn.disabled = false;
+    }
+  }, 1000);
+}
+</script>
+</body>
+</html>
