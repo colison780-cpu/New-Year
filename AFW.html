@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KA WhatsApp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#ece5dd;
+}
+
+/* TOP */
+.topbar{
+  background:#075e54;
+  color:white;
+  padding:12px;
+  font-size:18px;
+  display:flex;
+  justify-content:space-between;
+}
+
+/* TABS */
+.tabs{
+  display:flex;
+  background:#075e54;
+  color:white;
+}
+.tab{
+  flex:1;
+  text-align:center;
+  padding:10px;
+  cursor:pointer;
+  opacity:.7;
+}
+.tab.active{
+  border-bottom:3px solid #25d366;
+  opacity:1;
+}
+
+/* SCREENS */
+.screen{display:none}
+.screen.active{display:block}
+
+/* CHAT LIST */
+.chat{
+  padding:15px;
+  border-bottom:1px solid #eee;
+  background:white;
+  cursor:pointer;
+}
+.chat:hover{background:#f5f5f5}
+
+/* CHAT SCREEN */
+#chatScreen{
+  display:none;
+  flex-direction:column;
+  height:100vh;
+}
+
+.chatTop{
+  background:#075e54;
+  color:white;
+  padding:10px;
+  display:flex;
+  align-items:center;
+}
+.back{margin-right:10px;cursor:pointer}
+
+#messages{
+  flex:1;
+  padding:10px;
+  overflow-y:auto;
+  background:#ece5dd;
+}
+
+.msg{
+  max-width:70%;
+  padding:8px 10px;
+  border-radius:8px;
+  margin:6px 0;
+  font-size:14px;
+}
+.me{background:#dcf8c6;margin-left:auto}
+.other{background:white}
+.time{font-size:10px;opacity:.6;text-align:right}
+
+/* INPUT */
+.inputBar{
+  display:flex;
+  padding:8px;
+  background:#f0f0f0;
+}
+.icon{font-size:20px;margin:0 6px}
+input{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:none;
+}
+.send{
+  background:#075e54;
+  color:white;
+  border:none;
+  border-radius:50%;
+  padding:10px 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div>WhatsApp</div>
+  <div>⋮</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="openTab('chats')">Chats</div>
+  <div class="tab" onclick="openTab('status')">Status</div>
+  <div class="tab" onclick="openTab('calls')">Calls</div>
+</div>
+
+<!-- CHATS -->
+<div id="chats" class="screen active">
+  <div class="chat" onclick="openChat('Gauri')">Gauri</div>
+  <div class="chat" onclick="openChat('KA')">KA</div>
+</div>
+
+<!-- STATUS -->
+<div id="status" class="screen">
+  <div class="chat">Gauri – Today, 9:10 AM</div>
+  <div class="chat">KA – Feeling good ✨</div>
+</div>
+
+<!-- CALLS -->
+<div id="calls" class="screen">
+  <div class="chat">📞 Gauri – Yesterday</div>
+  <div class="chat">📞 KA – Today</div>
+</div>
+
+<!-- CHAT SCREEN -->
+<div id="chatScreen">
+  <div class="chatTop">
+    <div class="back" onclick="goBack()">←</div>
+    <div id="chatName"></div>
+  </div>
+
+  <div id="messages"></div>
+
+  <div class="inputBar">
+    <div class="icon">📷</div>
+    <input id="msgInput" placeholder="Message" onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="send" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+let currentChat="";
+
+function openTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+}
+
+function openChat(name){
+  currentChat=name;
+  document.getElementById("chatName").innerText=name;
+  document.getElementById("chatScreen").style.display="flex";
+  document.getElementById("messages").innerHTML="";
+  addMessage("Hey", "other");
+}
+
+function goBack(){
+  document.getElementById("chatScreen").style.display="none";
+}
+
+function sendMsg(){
+  const input=document.getElementById("msgInput");
+  const text=input.value.trim();
+  if(!text)return;
+  addMessage(text,"me");
+  input.value="";
+  setTimeout(()=>addMessage(reply(text),"other"),600);
+}
+
+function reply(msg){
+  msg=msg.toLowerCase();
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+  if(/hi|hello|hey/.test(msg)) return pick(["Hi","Hey"]);
+  if(/kya haal|kaisa hai/.test(msg)) return pick(["Theek hoon","Bas badhiya"]);
+  if(/kitne marks/.test(msg)) return pick(["Thik aaye","Expected se kam"]);
+  if(/kya kar/.test(msg)) return pick(["Kuch khaas nahi","Timepass"]);
+  if(/haan|ok|acha/.test(msg)) return pick(["Hmm","Theek"]);
+  if(/bye|gn/.test(msg)) return pick(["Bye","Good night"]);
+  return pick(["Acha","Samjha","Dekhte hain"]);
+}
+
+function addMessage(text,type){
+  const div=document.createElement("div");
+  div.className="msg "+type;
+  div.innerHTML=`${text}<div class="time">
+  ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+  </div>`;
+  const m=document.getElementById("messages");
+  m.appendChild(div);
+  m.scrollTop=m.scrollHeight;
+}
+</script>
+
+</body>
+</html>
