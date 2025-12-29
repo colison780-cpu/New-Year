@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KA UI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#111;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto;
+}
+
+/* PHONE */
+.phone{
+  width:360px;
+  height:720px;
+  background:#f5f5f5;
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,.7);
+  display:flex;
+  flex-direction:column;
+}
+
+/* STATUS BAR */
+.status{
+  height:32px;
+  padding:0 14px;
+  background:#fff;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+}
+
+/* SCREEN */
+.screen{
+  flex:1;
+  display:none;
+  overflow:auto;
+  animation:fade .25s ease;
+}
+.screen.active{display:block}
+
+/* HOME */
+.home{
+  padding:18px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+}
+.app{
+  text-align:center;
+  cursor:pointer;
+}
+.app-icon{
+  width:56px;
+  height:56px;
+  margin:auto;
+  border-radius:14px;
+  background:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:24px;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+.app span{
+  display:block;
+  margin-top:6px;
+  font-size:12px;
+  color:#333;
+}
+
+/* HEADER */
+.header{
+  padding:14px;
+  background:#fff;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  border-bottom:1px solid #ddd;
+}
+.back{cursor:pointer}
+
+/* MAIL */
+.mail{
+  padding:14px;
+}
+.mail-item{
+  background:#fff;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px;
+  box-shadow:0 3px 8px rgba(0,0,0,.1);
+}
+
+/* GAME */
+.game{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100%;
+}
+.btn{
+  padding:16px 28px;
+  border-radius:30px;
+  background:#111;
+  color:#fff;
+  font-size:16px;
+}
+
+/* NAV */
+.nav{
+  height:58px;
+  background:#fff;
+  border-top:1px solid #ddd;
+  display:flex;
+}
+.nav div{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:14px;
+  cursor:pointer;
+}
+
+@keyframes fade{
+  from{opacity:0}
+  to{opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+  <!-- STATUS -->
+  <div class="status">
+    <span id="time">00:00:00</span>
+    <span>📶 🔋</span>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen active" id="home">
+    <div class="home">
+      <div class="app" onclick="openApp('yt')">
+        <div class="app-icon">▶️</div><span>YouTube</span>
+      </div>
+      <div class="app" onclick="openApp('mail')">
+        <div class="app-icon">📧</div><span>KA Mail</span>
+      </div>
+      <div class="app" onclick="openApp('game')">
+        <div class="app-icon">🎮</div><span>Game</span>
+      </div>
+      <div class="app">
+        <div class="app-icon">⚙️</div><span>Settings</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- YOUTUBE -->
+  <div class="screen" id="yt">
+    <div class="header"><span class="back" onclick="goHome()">⬅</span>YouTube</div>
+    <iframe src="https://m.youtube.com"
+      style="border:0;width:100%;height:100%"></iframe>
+  </div>
+
+  <!-- MAIL -->
+  <div class="screen" id="mail">
+    <div class="header"><span class="back" onclick="goHome()">⬅</span>KA Mail</div>
+    <div class="mail">
+      <div class="mail-item"><b>KA System</b><br>This year should be memorable for you.</div>
+      <div class="mail-item"><b>Reminder</b><br>Focus. Build. Grow.</div>
+      <div class="mail-item"><b>Game Center</b><br>New games coming.</div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div class="screen" id="game">
+    <div class="header"><span class="back" onclick="goHome()">⬅</span>Tap Game</div>
+    <div class="game">
+      <button class="btn" onclick="count++">Tap</button>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <div onclick="goHome()">Home</div>
+    <div onclick="openApp('mail')">Mail</div>
+    <div onclick="openApp('game')">Game</div>
+  </div>
+
+</div>
+
+<script>
+let count=0;
+
+function openApp(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function goHome(){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('home').classList.add('active');
+}
+
+/* IST TIME */
+function updateTime(){
+  document.getElementById('time').innerText =
+    new Date().toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata"});
+}
+setInterval(updateTime,1000);
+updateTime();
+</script>
+
+</body>
+</html>
