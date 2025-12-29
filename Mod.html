@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KA OS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  background: #000;
+  font-family: system-ui, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* PHONE */
+.phone {
+  width: 360px;
+  height: 720px;
+  background: linear-gradient(180deg,#111,#000);
+  border-radius: 30px;
+  box-shadow: 0 0 40px #000;
+  overflow: hidden;
+  position: relative;
+  color: white;
+}
+
+/* STATUS BAR */
+.status {
+  height: 35px;
+  padding: 0 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+/* HOME */
+.home {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 20px;
+}
+
+.app {
+  text-align: center;
+  cursor: pointer;
+  animation: pop 0.6s ease;
+}
+
+.app div {
+  width: 55px;
+  height: 55px;
+  margin: auto;
+  border-radius: 15px;
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.app span {
+  font-size: 12px;
+  margin-top: 6px;
+  display: block;
+}
+
+/* APPS */
+.screen {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  display: none;
+  flex-direction: column;
+}
+
+.screen header {
+  padding: 12px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.back {
+  cursor: pointer;
+}
+
+/* GAME */
+#gameBox {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#tap {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+}
+
+/* KA MAIL */
+.mail {
+  padding: 15px;
+}
+.mail div {
+  background: #111;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+@keyframes pop {
+  from {transform: scale(0.5); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+  <div class="status">
+    <span id="time">00:00:00</span>
+    <span>📶 🔋</span>
+  </div>
+
+  <!-- HOME -->
+  <div class="home" id="home">
+
+    <div class="app" onclick="openApp('yt')">
+      <div>▶️</div><span>YouTube</span>
+    </div>
+
+    <div class="app" onclick="openApp('mail')">
+      <div>📧</div><span>KA Mail</span>
+    </div>
+
+    <div class="app" onclick="openApp('game')">
+      <div>🎮</div><span>Game</span>
+    </div>
+
+    <div class="app">
+      <div>⚙️</div><span>Settings</span>
+    </div>
+
+  </div>
+
+  <!-- YOUTUBE -->
+  <div class="screen" id="yt">
+    <header><span class="back" onclick="closeApp()">⬅</span> YouTube</header>
+    <iframe width="100%" height="100%" src="https://www.youtube.com/embed?autoplay=0"
+      frameborder="0" allowfullscreen></iframe>
+  </div>
+
+  <!-- KA MAIL -->
+  <div class="screen" id="mail">
+    <header><span class="back" onclick="closeApp()">⬅</span> KA Mail</header>
+    <div class="mail">
+      <div><b>Welcome to KA Mail</b><br>This year should be memorable for you.</div>
+      <div><b>System</b><br>Your KA OS is active.</div>
+      <div><b>Game Center</b><br>More games coming soon.</div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div class="screen" id="game">
+    <header><span class="back" onclick="closeApp()">⬅</span> Tap Game</header>
+    <div id="gameBox">
+      <div id="tap" onclick="score++">TAP</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let score = 0;
+
+function openApp(id){
+  document.getElementById("home").style.display="none";
+  document.getElementById(id).style.display="flex";
+}
+
+function closeApp(){
+  document.querySelectorAll(".screen").forEach(s=>s.style.display="none");
+  document.getElementById("home").style.display="grid";
+}
+
+/* IST TIME */
+function updateTime(){
+  const now = new Date().toLocaleTimeString("en-IN",{timeZone:"Asia/Kolkata"});
+  document.getElementById("time").innerText = now;
+}
+setInterval(updateTime,1000);
+updateTime();
+</script>
+
+</body>
+</html>
