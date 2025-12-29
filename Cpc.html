@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>KA WhatsApp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;font-family:system-ui;background:#ece5dd}
+.app{max-width:420px;height:100vh;margin:auto;background:#fff;display:flex;flex-direction:column}
+.top{background:#075e54;color:#fff;padding:10px;display:flex;justify-content:space-between}
+.chat{flex:1;background:url("https://i.imgur.com/3ZQ3Z5G.jpg");padding:10px;overflow-y:auto}
+.msg{max-width:75%;padding:8px;border-radius:8px;margin:6px 0;font-size:14px}
+.me{background:#dcf8c6;margin-left:auto}
+.other{background:#fff}
+.time{font-size:10px;text-align:right;color:#555}
+.ticks{font-size:12px;margin-left:4px}
+.blue{color:#34b7f1}
+.input{display:flex;padding:8px;background:#f0f0f0}
+.input input{flex:1;padding:10px;border-radius:20px;border:none}
+.input button{margin-left:6px;border:none;border-radius:50%;padding:10px;background:#075e54;color:#fff}
+.typing{font-size:12px;color:#555;margin-left:10px}
+.select{display:flex;gap:10px;justify-content:center;padding:6px}
+.select button{padding:6px 14px;border-radius:20px;border:none}
+.active{background:#075e54;color:#fff}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<div class="select">
+<button id="bKA" class="active" onclick="setUser('KA')">KA</button>
+<button id="bG" onclick="setUser('Gauri')">Gauri</button>
+</div>
+
+<div class="top">
+<span id="name">KA</span>
+<span>📞 📸</span>
+</div>
+
+<div class="chat" id="chat"></div>
+<div class="typing" id="typing" style="display:none">typing…</div>
+
+<div class="input">
+<input id="inp" placeholder="Type message">
+<button onclick="send()">➤</button>
+</div>
+
+</div>
+
+<script>
+let user="KA";
+let mood="neutral";
+
+const setUser=u=>{
+user=u;
+chat.innerHTML="";
+name.innerText=u;
+bKA.classList.remove("active");
+bG.classList.remove("active");
+(u==="KA"?bKA:bG).classList.add("active");
+};
+
+function send(){
+let t=inp.value.trim();
+if(!t)return;
+inp.value="";
+add(t,"me","✔");
+setTimeout(()=>ticks("✔✔"),300);
+typing.style.display="block";
+setTimeout(()=>{
+typing.style.display="none";
+add(reply(t),"other","");
+ticks("✔✔",true);
+},1000);
+}
+
+function add(text,type,t){
+let d=document.createElement("div");
+d.className="msg "+type;
+d.innerHTML=text+`<div class="time">${new Date().toLocaleTimeString([],{
+hour:'2-digit',minute:'2-digit'})} ${t?`<span class="ticks">${t}</span>`:""}</div>`;
+chat.appendChild(d);
+chat.scrollTop=chat.scrollHeight;
+}
+
+function ticks(v,blue=false){
+document.querySelectorAll(".ticks").forEach(x=>{
+x.innerText=v;
+if(blue)x.classList.add("blue");
+});
+}
+
+/* =================== CORE LOGIC ENGINE =================== */
+function reply(m){
+m=m.toLowerCase();
+
+/* ---- greetings (40+) ---- */
+if(/^(hi|hello|hey|yo|hii|helo|sup)/.test(m))
+return user==="Gauri"?"khelega":"khelegi";
+
+/* ---- how are you (50+) ---- */
+if(/how are you|kaisa|kya haal|haal|how r u/.test(m))
+return user==="Gauri"?"theek hoon tu bta":"theek hoon tum batao";
+
+/* ---- i'm good / fine (30+) ---- */
+if(/i'?m good|good|fine|mast|ok hoon/.test(m))
+return "nice";
+
+/* ---- wyd / what doing (40+) ---- */
+if(/wyd|what.*doing|kya kar|busy/.test(m))
+return user==="Gauri"?
+"busy hoon":
+"phone chala rha hoon";
+
+/* ---- laughing (20+) ---- */
+if(/😂|lol|haha|lmao/.test(m)) return "😂";
+
+/* ---- acha ---- */
+if(/acha|accha|ok samjha/.test(m))
+return user==="Gauri"?"samjhi":"samjha";
+
+/* ---- time queries (30+) ---- */
+if(/kitne baje|kab|time|kya plan/.test(m))
+return user==="Gauri"?"tum decide karo":"tu decide kar";
+
+/* ---- marks / studies (20+) ---- */
+if(/marks|result|exam|padhai/.test(m))
+return "theek hi aaye";
+
+/* ---- rude / dead ---- */
+if(/dead|idiot|pagal|stupid/.test(m)){
+mood="angry";
+return "are you idiot?";
+}
+
+/* ---- yes / no ---- */
+if(/haan|yes/.test(m)) return "ok";
+if(/no|nahi/.test(m)) return "theek hai";
+
+/* ---- admin king logic ---- */
+if(/i am king/.test(m) && user==="Gauri")
+return "aap to mahan hai king KA";
+if(/who are you/.test(m) && user==="KA")
+return "i am a king";
+
+/* ---- mood fallback ---- */
+if(mood==="angry"){mood="neutral";return "bas kar";}
+
+return user==="Gauri"?"hmm":"theek hai";
+}
+</script>
+</body>
+</html>
