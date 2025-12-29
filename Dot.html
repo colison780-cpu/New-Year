@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KA Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#ece5dd;
+}
+
+/* CHAT LIST */
+#chatList{
+  height:100vh;
+  background:#fff;
+}
+.header{
+  background:#075e54;
+  color:white;
+  padding:15px;
+  font-size:18px;
+}
+.chat{
+  padding:15px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+}
+.chat:hover{background:#f5f5f5}
+
+/* CHAT SCREEN */
+#chatScreen{
+  display:none;
+  flex-direction:column;
+  height:100vh;
+}
+
+.top{
+  background:#075e54;
+  color:white;
+  padding:10px;
+  display:flex;
+  align-items:center;
+}
+.back{
+  margin-right:10px;
+  cursor:pointer;
+}
+
+#messages{
+  flex:1;
+  padding:10px;
+  overflow-y:auto;
+  background:#ece5dd;
+}
+
+.msg{
+  max-width:70%;
+  padding:8px 10px;
+  border-radius:8px;
+  margin:6px 0;
+  font-size:14px;
+  position:relative;
+}
+.me{
+  background:#dcf8c6;
+  margin-left:auto;
+}
+.other{
+  background:#fff;
+}
+.time{
+  font-size:10px;
+  opacity:.6;
+  text-align:right;
+}
+
+/* INPUT */
+.inputBar{
+  display:flex;
+  padding:10px;
+  background:#f0f0f0;
+}
+input{
+  flex:1;
+  padding:10px;
+  border-radius:20px;
+  border:none;
+  outline:none;
+}
+button{
+  margin-left:10px;
+  border:none;
+  background:#075e54;
+  color:white;
+  padding:10px 15px;
+  border-radius:50%;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- CHAT LIST -->
+<div id="chatList">
+  <div class="header">KA Chat</div>
+  <div class="chat" onclick="openChat('Gauri')">Gauri</div>
+  <div class="chat" onclick="openChat('Rahul')">Rahul</div>
+  <div class="chat" onclick="openChat('Player 1')">Player 1</div>
+</div>
+
+<!-- CHAT SCREEN -->
+<div id="chatScreen">
+  <div class="top">
+    <div class="back" onclick="goBack()">←</div>
+    <div id="chatTitle"></div>
+  </div>
+
+  <div id="messages"></div>
+
+  <div class="inputBar">
+    <input id="msgInput" placeholder="Type a message" onkeydown="if(event.key==='Enter')sendMsg()">
+    <button onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+let lastTopic = "";
+let mood = "neutral";
+
+function openChat(name){
+  document.getElementById("chatTitle").innerText = name;
+  document.getElementById("chatList").style.display="none";
+  document.getElementById("chatScreen").style.display="flex";
+  document.getElementById("messages").innerHTML="";
+  addMessage("Hey", "other");
+}
+
+function goBack(){
+  document.getElementById("chatScreen").style.display="none";
+  document.getElementById("chatList").style.display="block";
+}
+
+function sendMsg(){
+  const input=document.getElementById("msgInput");
+  const text=input.value.trim();
+  if(!text)return;
+  addMessage(text,"me");
+  input.value="";
+  setTimeout(()=>addMessage(humanReply(text),"other"),600);
+}
+
+function humanReply(msg){
+  msg=msg.toLowerCase();
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+  if(/^(hi|hey|hello)$/.test(msg))
+    return pick(["Hi","Hey","Hello"]);
+
+  if(/how are you|how r u/.test(msg))
+    return pick(["Good","Fine","Bas chal raha","All good"]);
+
+  if(/good|fine|ok|okay/.test(msg))
+    return pick(["Nice","Acha","Good"]);
+
+  if(/what are you doing|wyd/.test(msg))
+    return pick(["Nothing much","Timepass","Just chilling"]);
+
+  if(/where are you/.test(msg))
+    return pick(["At home","Outside","Room me"]);
+
+  if(/lol|haha|😂/.test(msg))
+    return pick(["😂","Haha","Lol"]);
+
+  if(/bye|good night|gn/.test(msg))
+    return pick(["Bye","Good night","Talk later"]);
+
+  if(msg.length<=3)
+    return pick(["Hmm","Haan","Bol","Kya?"]);
+
+  return pick([
+    "Acha",
+    "Samjha",
+    "Theek hai",
+    "Okay",
+    "Dekhte hain",
+    "Ha"
+  ]);
+}
+
+function addMessage(text,type){
+  const msg=document.createElement("div");
+  msg.className="msg "+type;
+  msg.innerHTML=`${text}<div class="time">
+    ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+  </div>`;
+  const messages=document.getElementById("messages");
+  messages.appendChild(msg);
+  messages.scrollTop=messages.scrollHeight;
+}
+</script>
+
+</body>
+</html>
