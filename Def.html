@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:radial-gradient(circle at top,#120033,#000);
+  color:white;
+  font-family:Arial;
+  overflow:hidden;
+  text-align:center;
+}
+.hidden{display:none}
+
+#clock{
+  position:fixed;
+  top:10px;
+  width:100%;
+  color:gold;
+  font-size:18px;
+}
+
+.container{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+}
+
+.countdown{
+  font-size:90px;
+  animation:pulse 1s infinite;
+}
+@keyframes pulse{50%{transform:scale(1.2)}}
+
+.hny{
+  font-size:48px;
+  color:gold;
+  text-shadow:0 0 30px gold;
+  animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px gold}
+  to{text-shadow:0 0 40px gold}
+}
+
+.card{
+  background:rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:20px;
+  width:90%;
+  max-width:420px;
+  margin-top:20px;
+}
+
+button{
+  width:100%;
+  margin-top:10px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-size:17px;
+  cursor:pointer;
+  background:linear-gradient(45deg,#ff9800,#ff5722);
+  color:white;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:none;
+  margin-top:10px;
+  font-size:16px;
+}
+
+/* GAME */
+.game{
+  display:flex;
+  justify-content:space-around;
+  margin-top:20px;
+}
+.box{
+  width:80px;
+  height:80px;
+  border-radius:12px;
+  background:linear-gradient(45deg,#00e5ff,#7c4dff);
+  animation:float 1.5s infinite alternate;
+}
+@keyframes float{
+  from{transform:translateY(0)}
+  to{transform:translateY(-15px)}
+}
+
+.summary{
+  font-size:16px;
+  line-height:1.6;
+  color:#ffeb99;
+}
+</style>
+</head>
+
+<body>
+
+<div id="clock"></div>
+
+<div class="container">
+
+<div id="countdown" class="countdown">5</div>
+
+<div id="celebration" class="hidden">
+  <div class="hny">HAPPY NEW YEAR 2026 🎊</div>
+  <p style="color:gold;font-size:22px">
+    This year should be memorable for <b>YOU</b>
+  </p>
+</div>
+
+<div id="content" class="hidden card"></div>
+
+</div>
+
+<script>
+/* IST CLOCK */
+function updateClock(){
+  const d=new Date().toLocaleString("en-US",{timeZone:"Asia/Kolkata"});
+  document.getElementById("clock").innerText=
+    new Date(d).toTimeString().split(" ")[0];
+}
+setInterval(updateClock,1000); updateClock();
+
+/* COUNTDOWN */
+let c=5;
+let cd=document.getElementById("countdown");
+let t=setInterval(()=>{
+  c--; cd.innerText=c;
+  if(c===0){
+    clearInterval(t);
+    cd.classList.add("hidden");
+    celebration.classList.remove("hidden");
+    setTimeout(startFlow,2000);
+  }
+},1000);
+
+let data={},step=0;
+const box=document.getElementById("content");
+
+function startFlow(){
+  box.classList.remove("hidden");
+  askName();
+}
+
+function askName(){
+  box.innerHTML=`
+    <h2>Your Name?</h2>
+    <input id="nm" placeholder="Enter your name">
+    <button onclick="saveName()">Continue</button>`;
+}
+
+function saveName(){
+  let n=nm.value.trim();
+  if(!n) return alert("Name required 😊");
+  data.name=n; step=1; next();
+}
+
+function next(){
+  if(step===1){
+    box.innerHTML=`
+      <h2>How are you?</h2>
+      <button onclick="ans('Good')">Good</button>
+      <button onclick="ans('Fine')">Fine</button>
+      <button onclick="ans('Just like you')">Just like you</button>
+      <button onclick="ans('Prefer not to say')">Don’t want to tell</button>`;
+  }
+  else if(step===2){
+    box.innerHTML=`
+      <h2>Play a game with KA today?</h2>
+      <button onclick="ans('YES')">YES</button>
+      <button onclick="ans('YES')">YES</button>
+      <button onclick="ans('Let KA decide')">Let KA decide</button>`;
+  }
+  else if(step===3){
+    startGame();
+  }
+  else{
+    showSummary();
+  }
+}
+
+function ans(v){
+  if(step===1) data.mood=v;
+  if(step===2) data.game=v;
+  step++; next();
+}
+
+/* 🎮 GAME */
+function startGame(){
+  box.innerHTML=`
+    <h2>🎮 New Year Luck Challenge</h2>
+    <p>Tap one box & see your 2026</p>
+    <div class="game">
+      <div class="box" onclick="pick()"></div>
+      <div class="box" onclick="pick()"></div>
+      <div class="box" onclick="pick()"></div>
+    </div>`;
+}
+
+function pick(){
+  const results=[
+    "2026 is YOUR year 🎉",
+    "Ups & downs, but you’ll win 😎",
+    "Plot twists & growth 🔥"
+  ];
+  data.luck=results[Math.floor(Math.random()*results.length)];
+  step++; next();
+}
+
+function showSummary(){
+  box.innerHTML=`
+    <h2>Response Recorded ✅</h2>
+    <div class="summary">
+      <b>Name:</b> ${data.name}<br>
+      <b>Mood:</b> ${data.mood}<br>
+      <b>Game with KA:</b> ${data.game}<br>
+      <b>2026 Prediction:</b> ${data.luck}
+      <br><br>
+      📸 Screenshot & send to <b>KA</b>
+    </div>
+    <br><small>Made by one and only <b>KA</b></small>`;
+}
+</script>
+
+</body>
+</html>
