@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(180deg,#060014,#14003a);
+  font-family:Arial, sans-serif;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.card{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(8px);
+  border-radius:22px;
+  padding:22px;
+  width:100%;
+  max-width:420px;
+  box-shadow:0 0 25px rgba(255,215,0,0.15);
+}
+
+h1{
+  text-align:center;
+  color:gold;
+  text-shadow:0 0 15px gold;
+  margin-bottom:5px;
+}
+
+.subtitle{
+  text-align:center;
+  font-size:14px;
+  opacity:.8;
+  margin-bottom:18px;
+}
+
+h3{
+  margin-bottom:10px;
+}
+
+input{
+  width:100%;
+  padding:11px;
+  margin-top:8px;
+  border-radius:12px;
+  border:none;
+  font-size:15px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  margin-top:12px;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  cursor:pointer;
+  background:linear-gradient(45deg,#ff9800,#ff5722);
+  color:white;
+}
+
+.list{
+  margin-top:14px;
+  font-size:16px;
+  line-height:1.6;
+}
+
+.highlight{
+  margin-top:16px;
+  padding:12px;
+  border-radius:14px;
+  background:rgba(255,215,0,0.15);
+  text-align:center;
+  font-size:18px;
+  color:#ffd966;
+}
+
+.actions{
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+}
+
+.actions button{
+  flex:1;
+  font-size:14px;
+}
+
+.hide{display:none}
+
+footer{
+  text-align:center;
+  font-size:12px;
+  opacity:.6;
+  margin-top:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card">
+
+  <h1>Happy New Year 2026 ✨</h1>
+  <div class="subtitle">Some bonds are written by time.</div>
+
+  <h3>Who are your friends?</h3>
+
+  <input placeholder="Enter friend's name" id="nameInput">
+  <button onclick="addFriend()">➕ Add friend</button>
+
+  <div class="list" id="list"></div>
+
+  <button onclick="finalize()">🎉 Create New Year Card</button>
+
+  <div id="result" class="highlight hide"></div>
+
+  <div class="actions hide" id="actions">
+    <button onclick="tryAgain()">🔁 Try again</button>
+    <button onclick="screenshot()">📸 Screenshot</button>
+  </div>
+
+  <footer>Made by <b>KA</b></footer>
+</div>
+
+<script>
+let friends=[];
+
+function addFriend(){
+  const input=document.getElementById("nameInput");
+  const name=input.value.trim();
+  if(!name) return;
+  friends.push(name);
+  input.value="";
+  renderList();
+}
+
+function renderList(){
+  document.getElementById("list").innerHTML =
+    friends.map(n=>"• "+n).join("<br>");
+}
+
+function finalize(){
+  if(friends.length===0){
+    alert("Add at least one friend");
+    return;
+  }
+
+  let chosen="";
+
+  const hasGauri = friends.some(n=>n.toLowerCase()==="gauri");
+  const hasKA = friends.some(n=>n.toLowerCase()==="ka");
+
+  if(hasGauri){
+    chosen="Gauri";
+  }else if(hasKA && Math.random()<0.99){
+    chosen="KA";
+  }else{
+    chosen=friends[Math.floor(Math.random()*friends.length)];
+  }
+
+  document.getElementById("result").innerHTML =
+    `✨ <b>${chosen}</b> is shining with you this New Year ✨`;
+
+  document.getElementById("result").classList.remove("hide");
+  document.getElementById("actions").classList.remove("hide");
+}
+
+function tryAgain(){
+  friends=[];
+  renderList();
+  document.getElementById("result").classList.add("hide");
+  document.getElementById("actions").classList.add("hide");
+}
+
+function screenshot(){
+  document.querySelectorAll("button,input").forEach(e=>e.style.display="none");
+  alert("Take screenshot now 📸");
+}
+</script>
+
+</body>
+</html>
