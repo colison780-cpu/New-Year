@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  background:radial-gradient(circle at top,#12004d,#020015);
+  color:white;
+  font-family:Arial;
+  overflow:hidden;
+  text-align:center;
+}
+.hidden{display:none}
+
+.container{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding:15px;
+}
+
+.countdown{
+  font-size:80px;
+  animation:pulse 1s infinite;
+}
+@keyframes pulse{50%{transform:scale(1.15)}}
+
+.hny{
+  font-size:42px;
+  color:gold;
+  text-shadow:0 0 25px gold;
+}
+
+.subtitle{
+  opacity:.85;
+  font-size:16px;
+}
+
+.card{
+  background:rgba(255,255,255,0.08);
+  border-radius:18px;
+  padding:22px;
+  width:100%;
+  max-width:420px;
+  margin-top:20px;
+  backdrop-filter:blur(6px);
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border-radius:10px;
+  border:none;
+  font-size:16px;
+}
+
+button{
+  width:100%;
+  margin-top:14px;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-size:17px;
+  cursor:pointer;
+  background:linear-gradient(45deg,#ff9800,#ff5722);
+  color:white;
+}
+
+.shuffle{
+  animation:shake .15s infinite;
+}
+@keyframes shake{
+  0%{transform:translateX(-2px)}
+  50%{transform:translateX(2px)}
+  100%{transform:translateX(-2px)}
+}
+
+.result{
+  font-size:20px;
+  margin-top:18px;
+  color:#ffd966;
+  min-height:60px;
+}
+
+.glow{
+  font-size:26px;
+  color:#fff3b0;
+  animation:glow 1.2s infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px gold}
+  to{text-shadow:0 0 30px gold}
+}
+
+footer{
+  position:fixed;
+  bottom:10px;
+  width:100%;
+  font-size:13px;
+  opacity:.7;
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fx"></canvas>
+
+<div class="container">
+
+<div id="countdown" class="countdown">5</div>
+
+<div id="celebration" class="hidden">
+  <div class="hny">HAPPY NEW YEAR 2026</div>
+  <div class="subtitle">
+    This year should be memorable for <b>you</b>
+  </div>
+</div>
+
+<div id="content" class="hidden card"></div>
+
+</div>
+
+<footer>Made by one and only <b>KA</b></footer>
+
+<script>
+/* ================= COUNTDOWN ================= */
+let c=5;
+const cd=document.getElementById("countdown");
+const celebration=document.getElementById("celebration");
+const box=document.getElementById("content");
+
+let t=setInterval(()=>{
+  c--; cd.innerText=c;
+  if(c===0){
+    clearInterval(t);
+    cd.classList.add("hidden");
+    celebration.classList.remove("hidden");
+    setTimeout(startGame,1400);
+  }
+},1000);
+
+/* ================= GAME ================= */
+function startGame(){
+  box.classList.remove("hidden");
+  box.innerHTML=`
+    <h2>Who are your closest people?</h2>
+    <p style="opacity:.8">(Fate will decide)</p>
+
+    <input placeholder="Name 1" id="f1">
+    <input placeholder="Name 2" id="f2">
+    <input placeholder="Name 3" id="f3">
+    <input value="KA" disabled>
+
+    <button onclick="decide()">Reveal</button>
+
+    <div id="result" class="result"></div>
+    <button onclick="location.reload()" style="opacity:.8">Try Again</button>
+  `;
+}
+
+function decide(){
+  const raw=[
+    f1.value.trim(),
+    f2.value.trim(),
+    f3.value.trim()
+  ];
+
+  if(raw.every(n=>n==="")){
+    alert("Enter at least one name 🙂");
+    return;
+  }
+
+  box.classList.add("shuffle");
+  result.innerHTML="Fate is deciding…";
+
+  setTimeout(()=>{
+    box.classList.remove("shuffle");
+
+    const hasGauri = raw.some(n=>n.toLowerCase()==="gauri");
+    let chosen;
+
+    if(hasGauri){
+      chosen="Gauri";
+    }else if(Math.random()<0.99){
+      chosen="KA";
+    }else{
+      const others=raw.filter(n=>n);
+      chosen=others[Math.floor(Math.random()*others.length)];
+    }
+
+    typeResult(chosen);
+    fireworks();
+  },1800);
+}
+
+/* ================= TYPE EFFECT ================= */
+function typeResult(name){
+  const msg=`${name} seems to be an important part of your 2026.`;
+  let i=0;
+  result.innerHTML="";
+  let iv=setInterval(()=>{
+    result.innerHTML+=msg[i++];
+    if(i===msg.length){
+      clearInterval(iv);
+      result.innerHTML=`<span class="glow">${name}</span><br><span style="opacity:.7">Some bonds are written by time.</span>`;
+    }
+  },40);
+}
+
+/* ================= FIREWORKS ================= */
+const canvas=document.getElementById("fx");
+const ctx=canvas.getContext("2d");
+let w,h,parts=[];
+function resize(){w=canvas.width=innerWidth;h=canvas.height=innerHeight}
+resize();onresize=resize;
+
+function fireworks(){
+  for(let i=0;i<120;i++){
+    parts.push({
+      x:w/2,y:h/2,
+      dx:(Math.random()-0.5)*6,
+      dy:(Math.random()-0.5)*6,
+      life:60
+    });
+  }
+}
+
+(function anim(){
+  ctx.clearRect(0,0,w,h);
+  parts.forEach(p=>{
+    ctx.fillStyle="gold";
+    ctx.fillRect(p.x,p.y,3,3);
+    p.x+=p.dx; p.y+=p.dy; p.life--;
+  });
+  parts=parts.filter(p=>p.life>0);
+  requestAnimationFrame(anim);
+})();
+</script>
+
+</body>
+</html>
