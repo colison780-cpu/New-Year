@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy New Year 2026 🎊</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(180deg,#050014,#120033);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+.container{
+  background:rgba(255,255,255,0.05);
+  padding:20px;
+  border-radius:20px;
+  width:90%;
+  max-width:480px;
+  text-align:center;
+  box-shadow:0 0 40px rgba(255,215,0,0.5);
+}
+.hny{
+  font-size:40px;
+  font-weight:bold;
+  color:gold;
+  text-shadow:0 0 20px #ffdd33;
+  margin-bottom:15px;
+}
+.subtitle{
+  font-size:18px;
+  margin-bottom:25px;
+  color:#ffd966;
+}
+.friendInput{
+  padding:10px;
+  width:80%;
+  margin:6px 0;
+  border-radius:12px;
+  border:none;
+}
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+  margin:6px;
+  background:linear-gradient(45deg,#ff9800,#ff5722);
+  color:white;
+}
+#result{
+  margin-top:20px;
+  padding:15px;
+  border-radius:15px;
+  background:rgba(0,0,0,0.3);
+  font-size:18px;
+}
+#loading{
+  margin-top:15px;
+  font-size:25px;
+  animation:spin 1.5s linear infinite;
+}
+@keyframes spin{
+  0%{transform:rotate(0deg)}
+  100%{transform:rotate(360deg)}
+}
+.addBtn{
+  background:linear-gradient(45deg,#00b0ff,#00e676);
+}
+.tryBtn{
+  background:linear-gradient(45deg,#aa00ff,#ff4081);
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hny">🎊 HAPPY NEW YEAR 2026 🎊</div>
+  <div class="subtitle">Add your closest friends to celebrate!</div>
+
+  <div id="friendBox">
+    <input class="friendInput" placeholder="Friend 1" id="f1">
+    <input class="friendInput" placeholder="Friend 2" id="f2">
+    <input class="friendInput" placeholder="Friend 3" id="f3">
+    <input class="friendInput" value="KA" disabled>
+  </div>
+  <button class="addBtn" onclick="addFriend()">Add More Friends</button>
+  <br>
+  <button onclick="decide()">See Who Wins 🎉</button>
+
+  <div id="loading" class="hidden">⏳ Picking...</div>
+  <div id="result"></div>
+</div>
+
+<script>
+function addFriend(){
+  const box=document.getElementById("friendBox");
+  const input=document.createElement("input");
+  input.className="friendInput";
+  input.placeholder="Friend name";
+  box.appendChild(input);
+}
+
+function decide(){
+  const inputs=document.querySelectorAll(".friendInput");
+  const names=[];
+  inputs.forEach(i=>{if(i.value.trim()!=="") names.push(i.value.trim());});
+
+  if(names.length<1){
+    alert("Enter at least one name!");
+    return;
+  }
+
+  document.getElementById("loading").classList.remove("hidden");
+  document.getElementById("result").innerHTML="";
+
+  setTimeout(()=>{
+    document.getElementById("loading").classList.add("hidden");
+
+    let winner;
+    const hasGauri = names.some(n=>n.toLowerCase()==="gauri");
+
+    if(hasGauri){
+      winner="Gauri";
+    }else{
+      if(Math.random()<0.99){
+        winner="KA";
+      }else{
+        const others=names.filter(n=>n!=="KA");
+        winner=others[Math.floor(Math.random()*others.length)];
+      }
+    }
+
+    document.getElementById("result").innerHTML=`
+      <div style="font-size:22px;font-weight:bold;color:#ffd966;">🎉 ${winner} wins! 🎉</div>
+      <p style="opacity:.8;margin-top:10px;">Take a screenshot to share your New Year fun!</p>
+      <button class="tryBtn" onclick="resetGame()">Try Again</button>
+    `;
+  },1800);
+}
+
+function resetGame(){
+  document.getElementById("result").innerHTML="";
+  document.getElementById("friendBox").innerHTML=`
+    <input class="friendInput" placeholder="Friend 1" id="f1">
+    <input class="friendInput" placeholder="Friend 2" id="f2">
+    <input class="friendInput" placeholder="Friend 3" id="f3">
+    <input class="friendInput" value="KA" disabled>
+  `;
+}
+</script>
+</body>
+</html>
